@@ -1051,8 +1051,17 @@ function renderElement(el){
     ctx.font='600 11px "Barlow Condensed"';
     ctx.fillText(el.label||'SUBE TU FOTO',el.x+el.w/2,el.y+el.h/2+12);
   } else if(el.type==='image'){
-    if(el.img){if(el.radius>0){ctx.beginPath();ctx.roundRect(el.x,el.y,el.w,el.h,el.radius);ctx.clip();}
-    ctx.drawImage(el.img,el.x,el.y,el.w,el.h);}
+    if(el.img){
+      if(el.radius>0){ctx.beginPath();ctx.roundRect(el.x,el.y,el.w,el.h,el.radius);ctx.clip();}
+      else{ctx.beginPath();ctx.rect(el.x,el.y,el.w,el.h);ctx.clip();}
+      // Draw with cover-fit (no distortion, crops excess)
+      const iw=el.img.naturalWidth, ih=el.img.naturalHeight;
+      const iar=iw/ih, ear=el.w/el.h;
+      let sx=0,sy=0,sw=iw,sh=ih;
+      if(iar>ear){sw=ih*ear;sx=(iw-sw)/2;}
+      else{sh=iw/ear;sy=(ih-sh)/2;}
+      ctx.drawImage(el.img,sx,sy,sw,sh,el.x,el.y,el.w,el.h);
+    }
   } else if(el.type==='text'){
     ctx.fillStyle=el.color;ctx.font=`${el.fontWeight} ${el.fontSize}px '${el.fontFamily}'`;
     ctx.textAlign=el.align||'center';ctx.letterSpacing=(el.letterSpacing||0)+'px';
