@@ -238,6 +238,16 @@ function makeImage(img, url, opts = {}) {
     locked: false,
   };
 }
+function makePlaceholder(opts = {}) {
+  return {
+    id: nextId++, type: 'placeholder',
+    x: opts.x ?? 0, y: opts.y ?? 0,
+    w: opts.w ?? canvasW * 0.5, h: opts.h ?? canvasH,
+    label: opts.label ?? 'SUBE TU FOTO AQUÍ',
+    opacity: 1,
+    locked: false,
+  };
+}
 
 // ═══════════════════════════════════════════════════
 //  UNDO / REDO
@@ -312,11 +322,24 @@ function renderSidebar(tab) {
         </div>
       </div>
       <div class="sb-section">
-        <div class="sb-label">Diseños rápidos</div>
-        <div class="el-btn" onclick="applyQuickDesign('proyecto')"><span class="icon">🏗</span> Proyecto completado</div>
-        <div class="el-btn" onclick="applyQuickDesign('servicio')"><span class="icon">⚙</span> Servicio destacado</div>
+        <div class="sb-label">Montajes e Izajes</div>
+        <div class="el-btn" onclick="applyQuickDesign('izaje')"><span class="icon">🏗</span> Izaje / Maniobra</div>
+        <div class="el-btn" onclick="applyQuickDesign('montaje')"><span class="icon">⚙</span> Montaje Industrial</div>
+        <div class="el-btn" onclick="applyQuickDesign('lowboy')"><span class="icon">🚛</span> Transporte / Lowboy</div>
+        <div class="el-btn" onclick="applyQuickDesign('proyecto')"><span class="icon">✅</span> Proyecto Completado</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Marketing</div>
         <div class="el-btn" onclick="applyQuickDesign('dato')"><span class="icon">📊</span> Dato impactante</div>
+        <div class="el-btn" onclick="applyQuickDesign('antesdespues')"><span class="icon">↔</span> Antes / Después</div>
+        <div class="el-btn" onclick="applyQuickDesign('servicio')"><span class="icon">📋</span> Lista de servicios</div>
+        <div class="el-btn" onclick="applyQuickDesign('seguridad')"><span class="icon">🛡</span> Seguridad Industrial</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-label">Corporativo</div>
         <div class="el-btn" onclick="applyQuickDesign('contacto')"><span class="icon">📞</span> Tarjeta de contacto</div>
+        <div class="el-btn" onclick="applyQuickDesign('cotizacion')"><span class="icon">📄</span> Pide tu cotización</div>
+        <div class="el-btn" onclick="applyQuickDesign('equipo')"><span class="icon">👷</span> Nuestro equipo</div>
       </div>`;
   } else if (tab === 'elements') {
     body.innerHTML = `
@@ -354,7 +377,7 @@ function renderSidebar(tab) {
             <div class="del" onclick="event.stopPropagation();removePhoto('${p.id}')">✕</div>
           </div>
         `).join('')}
-        ${uploadedPhotos.length === 0 ? '<p style="font-size:10px;color:var(--mut);text-align:center;">Sube fotos para usarlas en tu diseño</p>' : ''}
+        ${uploadedPhotos.length === 0 ? '<p style="font-size:10px;color:var(--mut);text-align:center;">Sube fotos para usarlas en tu diseño</p>' : '<p style="font-size:9px;color:var(--acc);text-align:center;margin-top:8px;line-height:1.5;">💡 Tip: Selecciona un placeholder en el canvas y luego haz clic en la foto para reemplazarlo</p>'}
       </div>`;
   } else if (tab === 'brand') {
     body.innerHTML = `
@@ -425,8 +448,23 @@ function addPhotoToCanvas(photoId) {
   const ph = uploadedPhotos.find(p => p.id === photoId);
   if (!ph) return;
   saveState();
-  elements.push(makeImage(ph.img, ph.url));
-  selectedId = elements[elements.length-1].id;
+  // If a placeholder is selected, replace it with the photo
+  const sel = elements.find(e => e.id === selectedId);
+  if (sel && sel.type === 'placeholder') {
+    const imgEl = makeImage(ph.img, ph.url, { x: sel.x, y: sel.y, w: sel.w, h: sel.h });
+    const idx = elements.findIndex(e => e.id === sel.id);
+    elements.splice(idx, 1, imgEl);
+    selectedId = imgEl.id;
+    renderAll();
+    return;
+  }
+  // Otherwise, insert photo after backgrounds but before text/overlays
+  const imgEl = makeImage(ph.img, ph.url);
+  // Find first text element index to insert before it
+  let insertIdx = elements.findIndex(e => e.type === 'text' || e.type === 'placeholder');
+  if (insertIdx === -1) insertIdx = elements.length;
+  elements.splice(insertIdx, 0, imgEl);
+  selectedId = imgEl.id;
   renderAll();
 }
 function removePhoto(photoId) {
@@ -458,38 +496,180 @@ function applyQuickDesign(type) {
   saveState();
   elements = [];
   selectedId = null;
-  if (type === 'proyecto') {
-    elements.push(makeRect({ x: 0, y: 0, w: canvasW, h: canvasH, color: '#06060a' }));
-    elements.push(makeRect({ x: 0, y: canvasH * 0.7, w: canvasW, h: canvasH * 0.3, color: '#06060a', opacity: 0.95 }));
-    elements.push(makeRect({ x: 40, y: canvasH * 0.25, w: 5, h: 120, color: '#c8a84b' }));
-    elements.push(makeText('PROYECTO', { x: 60, y: canvasH * 0.22, w: canvasW - 120, h: 80, fontSize: 72, fontWeight: '900', color: '#f0f4f8', align: 'left' }));
-    elements.push(makeText('COMPLETADO', { x: 60, y: canvasH * 0.22 + 70, w: canvasW - 120, h: 60, fontSize: 56, fontWeight: '900', color: '#c8a84b', align: 'left' }));
-    elements.push(makeText('Descripción del proyecto y logros alcanzados.', { x: 60, y: canvasH * 0.55, w: canvasW - 120, h: 30, fontSize: 18, fontWeight: '400', fontFamily: 'Barlow', color: '#55667a', align: 'left' }));
-    elements.push(makeText('MICSA', { x: 60, y: canvasH - 80, w: 200, h: 36, fontSize: 28, fontFamily: 'Black Ops One', fontWeight: '400', color: '#f0f4f8', align: 'left', letterSpacing: 4 }));
-    elements.push(makeText('MONTAJES E IZAJES DEL CENTRO INDUSTRIAL', { x: 60, y: canvasH - 48, w: 500, h: 20, fontSize: 10, fontWeight: '500', fontFamily: 'Barlow Condensed', color: '#2e3e50', align: 'left', letterSpacing: 2 }));
-  } else if (type === 'servicio') {
-    elements.push(makeRect({ x: 0, y: 0, w: canvasW, h: canvasH, color: '#06060a' }));
-    elements.push(makeRect({ x: 0, y: 0, w: canvasW, h: 6, color: '#c8a84b' }));
-    elements.push(makeText('NUESTRO SERVICIO', { x: 0, y: canvasH * 0.12, w: canvasW, h: 20, fontSize: 12, fontWeight: '700', color: '#c8a84b', letterSpacing: 4 }));
-    elements.push(makeText('IZAJES\nINDUSTRIALES', { x: 0, y: canvasH * 0.2, w: canvasW, h: 160, fontSize: 68, fontWeight: '900', color: '#f0f4f8', lineHeight: 1.05 }));
-    elements.push(makeLine({ x: canvasW * 0.3, y: canvasH * 0.58, w: canvasW * 0.4, h: 2, color: '#c8a84b', opacity: 0.3 }));
-    elements.push(makeText('Capacidad de maniobra hasta 100 toneladas.\nSeguridad y precisión en cada operación.', { x: canvasW * 0.1, y: canvasH * 0.63, w: canvasW * 0.8, h: 60, fontSize: 16, fontWeight: '400', fontFamily: 'Barlow', color: '#55667a' }));
-    elements.push(makeText('MICSA', { x: 0, y: canvasH - 80, w: canvasW, h: 36, fontSize: 24, fontFamily: 'Black Ops One', fontWeight: '400', color: '#f0f4f8', letterSpacing: 4 }));
+  const W = canvasW, H = canvasH;
+  const bg = (c) => makeRect({ x:0, y:0, w:W, h:H, color: c || '#06060a' });
+  const overlay = (x,y,w,h,op) => makeRect({ x, y, w, h, color:'#000000', opacity: op || 0.6 });
+  const gold = '#c8a84b', white = '#f0f4f8', gray = '#55667a', dark = '#06060a';
+  const brand = () => {
+    elements.push(makeText('MICSA', { x:W*0.05, y:H-80, w:200, h:36, fontSize:26, fontFamily:'Black Ops One', fontWeight:'400', color:white, align:'left', letterSpacing:4 }));
+    elements.push(makeText('MONTAJES E IZAJES DEL CENTRO INDUSTRIAL', { x:W*0.05, y:H-48, w:500, h:20, fontSize:9, fontWeight:'600', fontFamily:'Barlow Condensed', color:'#3a4a5a', align:'left', letterSpacing:2 }));
+  };
+
+  if (type === 'izaje') {
+    // Foto izquierda, info derecha
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W*0.55, h:H, label:'FOTO DE IZAJE' }));
+    elements.push(makeRect({ x:W*0.48, y:0, w:W*0.52, h:H, color:dark, opacity:0.92 }));
+    elements.push(makeRect({ x:W*0.55-3, y:H*0.15, w:3, h:H*0.5, color:gold }));
+    elements.push(makeText('IZAJE', { x:W*0.58, y:H*0.15, w:W*0.38, h:80, fontSize:72, fontWeight:'900', color:white, align:'left' }));
+    elements.push(makeText('INDUSTRIAL', { x:W*0.58, y:H*0.15+72, w:W*0.38, h:50, fontSize:48, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('Maniobra especializada con grúas\nde alta capacidad y personal certificado.', { x:W*0.58, y:H*0.52, w:W*0.36, h:50, fontSize:15, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
+    // Stats
+    elements.push(makeRect({ x:W*0.58, y:H*0.68, w:100, h:60, color:dark, opacity:0.9, radius:4, borderColor:gold, borderWidth:1 }));
+    elements.push(makeText('100T', { x:W*0.58+8, y:H*0.68+5, w:84, h:34, fontSize:32, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('CAPACIDAD', { x:W*0.58+8, y:H*0.68+40, w:84, h:14, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
+    elements.push(makeRect({ x:W*0.58+112, y:H*0.68, w:100, h:60, color:dark, opacity:0.9, radius:4, borderColor:gold, borderWidth:1 }));
+    elements.push(makeText('0', { x:W*0.58+120, y:H*0.68+5, w:84, h:34, fontSize:32, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('INCIDENTES', { x:W*0.58+120, y:H*0.68+40, w:84, h:14, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
+    brand();
+
+  } else if (type === 'montaje') {
+    // Foto fondo completo + overlay + texto
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE MONTAJE' }));
+    elements.push(overlay(0,0,W,H,0.65));
+    elements.push(makeRect({ x:0, y:H*0.6, w:W, h:H*0.4, color:dark, opacity:0.9 }));
+    elements.push(makeRect({ x:W*0.05, y:H*0.35, w:5, h:H*0.2, color:gold }));
+    elements.push(makeText('MONTAJE', { x:W*0.08, y:H*0.32, w:W*0.5, h:80, fontSize:68, fontWeight:'900', color:white, align:'left' }));
+    elements.push(makeText('INDUSTRIAL', { x:W*0.08, y:H*0.32+68, w:W*0.5, h:50, fontSize:42, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('Instalación de maquinaria y equipo pesado\ncon precisión milimétrica y seguridad total.', { x:W*0.05, y:H*0.66, w:W*0.55, h:50, fontSize:15, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', align:'left', lineHeight:1.6 }));
+    // Tags
+    elements.push(makeRect({ x:W*0.05, y:H*0.8, w:90, h:24, color:gold, opacity:0.12, radius:3, borderColor:gold, borderWidth:1 }));
+    elements.push(makeText('MONTAJE', { x:W*0.05+10, y:H*0.8+4, w:70, h:16, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:2 }));
+    elements.push(makeRect({ x:W*0.05+100, y:H*0.8, w:110, h:24, color:gold, opacity:0.12, radius:3, borderColor:gold, borderWidth:1 }));
+    elements.push(makeText('ALINEACIÓN', { x:W*0.05+110, y:H*0.8+4, w:90, h:16, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:2 }));
+    elements.push(makeRect({ x:W*0.05+220, y:H*0.8, w:110, h:24, color:gold, opacity:0.12, radius:3, borderColor:gold, borderWidth:1 }));
+    elements.push(makeText('NIVELACIÓN', { x:W*0.05+230, y:H*0.8+4, w:90, h:16, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:2 }));
+    brand();
+
+  } else if (type === 'lowboy') {
+    // Split horizontal: foto arriba, info abajo
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H*0.55, label:'FOTO DE TRANSPORTE' }));
+    elements.push(makeRect({ x:0, y:H*0.5, w:W, h:H*0.5, color:dark }));
+    elements.push(makeRect({ x:0, y:H*0.5, w:W, h:4, color:gold }));
+    elements.push(makeText('TRANSPORTE', { x:W*0.05, y:H*0.55, w:W*0.5, h:70, fontSize:56, fontWeight:'900', color:white, align:'left' }));
+    elements.push(makeText('ESPECIALIZADO', { x:W*0.05, y:H*0.55+54, w:W*0.5, h:40, fontSize:36, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('Lowboy · Cama baja · Plataformas\nTraslado de maquinaria sobredimensionada', { x:W*0.05, y:H*0.79, w:W*0.5, h:40, fontSize:14, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
+    // Right stats
+    elements.push(makeRect({ x:W*0.6, y:H*0.58, w:W*0.34, h:100, color:'#0a0a14', opacity:0.8, radius:6, borderColor:'#1a2a3a', borderWidth:1 }));
+    elements.push(makeRect({ x:W*0.6, y:H*0.58, w:4, h:100, color:gold }));
+    elements.push(makeText('COBERTURA', { x:W*0.62, y:H*0.58+8, w:200, h:14, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:3 }));
+    elements.push(makeText('Nacional', { x:W*0.62, y:H*0.58+24, w:200, h:30, fontSize:28, fontWeight:'900', color:white, align:'left' }));
+    elements.push(makeText('Permisos SCT · Escolta · GPS', { x:W*0.62, y:H*0.58+60, w:200, h:16, fontSize:11, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left' }));
+    brand();
+
+  } else if (type === 'proyecto') {
+    // 2 fotos + info panel
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W*0.48, h:H*0.65, label:'FOTO PRINCIPAL' }));
+    elements.push(makePlaceholder({ x:0, y:H*0.67, w:W*0.48, h:H*0.33, label:'FOTO DETALLE' }));
+    elements.push(makeRect({ x:W*0.48, y:0, w:W*0.52, h:H, color:dark }));
+    elements.push(makeRect({ x:W*0.48, y:0, w:3, h:H, color:gold, opacity:0.4 }));
+    elements.push(makeText('PROYECTO COMPLETADO', { x:W*0.52, y:H*0.08, w:W*0.44, h:16, fontSize:10, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
+    elements.push(makeText('NOMBRE\nDEL PROYECTO', { x:W*0.52, y:H*0.14, w:W*0.44, h:120, fontSize:52, fontWeight:'900', color:white, align:'left', lineHeight:1.05 }));
+    elements.push(makeLine({ x:W*0.52, y:H*0.45, w:W*0.2, h:2, color:gold, opacity:0.3 }));
+    elements.push(makeText('Descripción breve del proyecto,\nubicación y alcance del trabajo.', { x:W*0.52, y:H*0.5, w:W*0.42, h:50, fontSize:15, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
+    // Stats row
+    elements.push(makeRect({ x:W*0.52, y:H*0.65, w:90, h:55, color:'#0a0a14', radius:4 }));
+    elements.push(makeRect({ x:W*0.52, y:H*0.65, w:3, h:55, color:gold }));
+    elements.push(makeText('20T', { x:W*0.52+12, y:H*0.65+4, w:70, h:28, fontSize:26, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('PESO', { x:W*0.52+12, y:H*0.65+34, w:70, h:12, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
+    elements.push(makeRect({ x:W*0.52+100, y:H*0.65, w:90, h:55, color:'#0a0a14', radius:4 }));
+    elements.push(makeRect({ x:W*0.52+100, y:H*0.65, w:3, h:55, color:gold }));
+    elements.push(makeText('3', { x:W*0.52+112, y:H*0.65+4, w:70, h:28, fontSize:26, fontWeight:'900', color:gold, align:'left' }));
+    elements.push(makeText('DÍAS', { x:W*0.52+112, y:H*0.65+34, w:70, h:12, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
+    brand();
+
   } else if (type === 'dato') {
-    elements.push(makeRect({ x: 0, y: 0, w: canvasW, h: canvasH, color: '#06060a' }));
-    elements.push(makeText('100', { x: 0, y: canvasH * 0.15, w: canvasW, h: 200, fontSize: 180, fontWeight: '900', color: '#c8a84b' }));
-    elements.push(makeText('TONELADAS', { x: 0, y: canvasH * 0.15 + 180, w: canvasW, h: 80, fontSize: 64, fontWeight: '900', color: '#f0f4f8' }));
-    elements.push(makeText('SIN INCIDENTES', { x: 0, y: canvasH * 0.15 + 260, w: canvasW, h: 40, fontSize: 28, fontWeight: '900', color: '#f0f4f8', opacity: 0.15 }));
-    elements.push(makeLine({ x: canvasW * 0.3, y: canvasH * 0.7, w: canvasW * 0.4, h: 2, color: '#c8a84b', opacity: 0.3 }));
-    elements.push(makeText('MICSA', { x: 0, y: canvasH - 80, w: canvasW, h: 36, fontSize: 24, fontFamily: 'Black Ops One', fontWeight: '400', color: '#f0f4f8', letterSpacing: 4 }));
+    // Big number + foto fondo
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE FONDO (OPCIONAL)' }));
+    elements.push(overlay(0,0,W,H,0.8));
+    elements.push(makeText('100', { x:0, y:H*0.08, w:W, h:250, fontSize:220, fontWeight:'900', color:gold }));
+    elements.push(makeText('TONELADAS', { x:0, y:H*0.08+210, w:W, h:80, fontSize:72, fontWeight:'900', color:white }));
+    elements.push(makeText('IZADAS CON ÉXITO', { x:0, y:H*0.08+290, w:W, h:40, fontSize:24, fontWeight:'900', color:white, opacity:0.12 }));
+    elements.push(makeLine({ x:W*0.35, y:H*0.72, w:W*0.3, h:2, color:gold, opacity:0.3 }));
+    elements.push(makeText('Cero incidentes. Cero retrasos.\nSeguridad y precisión en cada maniobra.', { x:W*0.1, y:H*0.76, w:W*0.8, h:50, fontSize:16, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', lineHeight:1.6 }));
+    elements.push(makeText('MICSA', { x:0, y:H-70, w:W, h:30, fontSize:22, fontFamily:'Black Ops One', fontWeight:'400', color:white, letterSpacing:4 }));
+
+  } else if (type === 'antesdespues') {
+    // Split 50/50 con fotos
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W*0.5-2, h:H, label:'ANTES' }));
+    elements.push(makePlaceholder({ x:W*0.5+2, y:0, w:W*0.5-2, h:H, label:'DESPUÉS' }));
+    elements.push(makeRect({ x:W*0.5-2, y:0, w:4, h:H, color:gold }));
+    // Labels top
+    elements.push(makeRect({ x:0, y:0, w:W, h:60, color:dark, opacity:0.85 }));
+    elements.push(makeText('ANTES', { x:0, y:12, w:W*0.5, h:30, fontSize:22, fontWeight:'900', color:'#666', letterSpacing:4 }));
+    elements.push(makeText('DESPUÉS', { x:W*0.5, y:12, w:W*0.5, h:30, fontSize:22, fontWeight:'900', color:gold, letterSpacing:4 }));
+    // Bottom bar
+    elements.push(makeRect({ x:0, y:H-70, w:W, h:70, color:dark, opacity:0.9 }));
+    elements.push(makeText('MICSA', { x:W*0.05, y:H-55, w:200, h:30, fontSize:20, fontFamily:'Black Ops One', fontWeight:'400', color:white, align:'left', letterSpacing:4 }));
+    elements.push(makeText('NOMBRE DEL PROYECTO', { x:W*0.05, y:H-28, w:300, h:14, fontSize:10, fontWeight:'600', fontFamily:'Barlow Condensed', color:gray, align:'left', letterSpacing:2 }));
+
+  } else if (type === 'servicio') {
+    // Lista de servicios con iconos
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W*0.45, h:H, label:'FOTO DE SERVICIO' }));
+    elements.push(makeRect({ x:W*0.42, y:0, w:W*0.58, h:H, color:dark, opacity:0.95 }));
+    elements.push(makeRect({ x:W*0.45-3, y:0, w:3, h:H, color:gold, opacity:0.5 }));
+    elements.push(makeText('NUESTROS', { x:W*0.48, y:H*0.06, w:W*0.48, h:20, fontSize:12, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
+    elements.push(makeText('SERVICIOS', { x:W*0.48, y:H*0.06+22, w:W*0.48, h:60, fontSize:52, fontWeight:'900', color:white, align:'left' }));
+    // Service items
+    const svc = [['Izajes con grúa','Hasta 100 toneladas'],['Montajes industriales','Maquinaria y equipo pesado'],['Transporte especializado','Lowboy y cama baja'],['Maniobras especiales','Espacios confinados']];
+    svc.forEach((s,i) => {
+      const sy = H*0.28 + i*((H*0.5)/4);
+      elements.push(makeRect({ x:W*0.48, y:sy, w:4, h:40, color:gold, opacity:0.6 }));
+      elements.push(makeText(s[0], { x:W*0.48+16, y:sy-2, w:W*0.44, h:20, fontSize:18, fontWeight:'700', color:white, align:'left' }));
+      elements.push(makeText(s[1], { x:W*0.48+16, y:sy+20, w:W*0.44, h:16, fontSize:12, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left' }));
+    });
+    brand();
+
+  } else if (type === 'seguridad') {
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE EQUIPO DE SEGURIDAD' }));
+    elements.push(overlay(0,0,W,H,0.7));
+    elements.push(makeRect({ x:0, y:0, w:W, h:6, color:'#3fb950' }));
+    elements.push(makeText('SEGURIDAD', { x:0, y:H*0.2, w:W, h:100, fontSize:80, fontWeight:'900', color:white }));
+    elements.push(makeText('ES PRIMERO', { x:0, y:H*0.2+80, w:W, h:60, fontSize:48, fontWeight:'900', color:'#3fb950' }));
+    elements.push(makeLine({ x:W*0.35, y:H*0.55, w:W*0.3, h:2, color:'#3fb950', opacity:0.3 }));
+    elements.push(makeText('✓  Personal certificado DC-3\n✓  Equipo de protección completo\n✓  Plan de maniobra documentado\n✓  Cero tolerancia a incidentes', { x:W*0.2, y:H*0.6, w:W*0.6, h:120, fontSize:16, fontWeight:'500', fontFamily:'Barlow', color:'#b0d0b0', align:'left', lineHeight:1.8 }));
+    elements.push(makeText('MICSA', { x:0, y:H-70, w:W, h:30, fontSize:22, fontFamily:'Black Ops One', fontWeight:'400', color:white, letterSpacing:4 }));
+    elements.push(makeText('REPSE NO. 282364', { x:0, y:H-38, w:W, h:16, fontSize:9, fontWeight:'600', fontFamily:'Barlow Condensed', color:'#3a5a3a', letterSpacing:2 }));
+
   } else if (type === 'contacto') {
-    elements.push(makeRect({ x: 0, y: 0, w: canvasW, h: canvasH, color: '#06060a' }));
-    elements.push(makeRect({ x: 0, y: 0, w: canvasW * 0.4, h: canvasH, color: '#c8a84b', opacity: 0.08 }));
-    elements.push(makeRect({ x: canvasW * 0.4 - 3, y: 0, w: 3, h: canvasH, color: '#c8a84b', opacity: 0.5 }));
-    elements.push(makeText('MICSA', { x: canvasW * 0.05, y: canvasH * 0.3, w: canvasW * 0.3, h: 50, fontSize: 36, fontFamily: 'Black Ops One', fontWeight: '400', color: '#f0f4f8', align: 'left', letterSpacing: 4 }));
-    elements.push(makeText('MONTAJES E IZAJES\nDEL CENTRO INDUSTRIAL', { x: canvasW * 0.05, y: canvasH * 0.3 + 50, w: canvasW * 0.3, h: 40, fontSize: 10, fontWeight: '600', fontFamily: 'Barlow Condensed', color: '#55667a', align: 'left', letterSpacing: 2 }));
-    elements.push(makeText('CONTACTO', { x: canvasW * 0.48, y: canvasH * 0.15, w: canvasW * 0.45, h: 20, fontSize: 12, fontWeight: '700', color: '#c8a84b', align: 'left', letterSpacing: 4 }));
-    elements.push(makeText('Tel: (866) 123-4567\ncontacto@micsa.com\nCiudad Frontera, Coahuila\nRFC: MIC2301268S5', { x: canvasW * 0.48, y: canvasH * 0.25, w: canvasW * 0.45, h: 160, fontSize: 18, fontWeight: '400', fontFamily: 'Barlow', color: '#8a9faf', align: 'left', lineHeight: 1.8 }));
+    elements.push(bg());
+    elements.push(makeRect({ x:0, y:0, w:W*0.42, h:H, color:gold, opacity:0.06 }));
+    elements.push(makeRect({ x:W*0.42-3, y:0, w:3, h:H, color:gold, opacity:0.4 }));
+    elements.push(makePlaceholder({ x:W*0.42, y:0, w:W*0.58, h:H, label:'FOTO DE EQUIPO O MAQUINARIA' }));
+    elements.push(makeRect({ x:W*0.42, y:0, w:W*0.58, h:H, color:dark, opacity:0.4 }));
+    elements.push(makeText('MICSA', { x:W*0.06, y:H*0.15, w:W*0.3, h:50, fontSize:38, fontFamily:'Black Ops One', fontWeight:'400', color:white, align:'left', letterSpacing:4 }));
+    elements.push(makeText('MONTAJES E IZAJES\nDEL CENTRO INDUSTRIAL', { x:W*0.06, y:H*0.15+52, w:W*0.3, h:40, fontSize:10, fontWeight:'600', fontFamily:'Barlow Condensed', color:gray, align:'left', letterSpacing:2 }));
+    elements.push(makeLine({ x:W*0.06, y:H*0.4, w:W*0.15, h:2, color:gold, opacity:0.3 }));
+    elements.push(makeText('CONTACTO', { x:W*0.06, y:H*0.45, w:W*0.3, h:16, fontSize:10, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
+    elements.push(makeText('Tel: (866) 633-1234\ncontacto@micsa.com.mx\nCiudad Frontera, Coahuila\n\nRFC: MIC2301268S5\nREPSE: 282364', { x:W*0.06, y:H*0.5, w:W*0.3, h:180, fontSize:16, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', align:'left', lineHeight:1.8 }));
+
+  } else if (type === 'cotizacion') {
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE MANIOBRA' }));
+    elements.push(overlay(0,0,W,H,0.75));
+    elements.push(makeText('¿NECESITAS', { x:0, y:H*0.15, w:W, h:50, fontSize:36, fontWeight:'700', color:gray }));
+    elements.push(makeText('IZAJE O\nMONTAJE?', { x:0, y:H*0.15+45, w:W, h:160, fontSize:72, fontWeight:'900', color:white, lineHeight:1.05 }));
+    elements.push(makeLine({ x:W*0.35, y:H*0.58, w:W*0.3, h:2, color:gold, opacity:0.4 }));
+    elements.push(makeText('COTIZACIÓN SIN COSTO', { x:0, y:H*0.64, w:W, h:30, fontSize:20, fontWeight:'700', color:gold, letterSpacing:4 }));
+    elements.push(makeText('Tel: (866) 633-1234\ncontacto@micsa.com.mx', { x:0, y:H*0.72, w:W, h:50, fontSize:18, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', lineHeight:1.8 }));
+    elements.push(makeText('MICSA', { x:0, y:H-70, w:W, h:30, fontSize:22, fontFamily:'Black Ops One', fontWeight:'400', color:white, letterSpacing:4 }));
+
+  } else if (type === 'equipo') {
+    elements.push(bg());
+    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DEL EQUIPO DE TRABAJO' }));
+    elements.push(makeRect({ x:0, y:H*0.55, w:W, h:H*0.45, color:dark, opacity:0.92 }));
+    elements.push(makeRect({ x:0, y:H*0.55, w:W, h:4, color:gold }));
+    elements.push(makeText('NUESTRO EQUIPO', { x:W*0.05, y:H*0.58, w:W*0.5, h:16, fontSize:10, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
+    elements.push(makeText('PROFESIONALES\nCERTIFICADOS', { x:W*0.05, y:H*0.58+22, w:W*0.5, h:100, fontSize:48, fontWeight:'900', color:white, align:'left', lineHeight:1.05 }));
+    elements.push(makeText('Personal capacitado con certificaciones DC-3,\nNOM-006 y más de 10 años de experiencia.', { x:W*0.05, y:H*0.84, w:W*0.55, h:40, fontSize:14, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
+    brand();
   }
   renderAll();
 }
@@ -587,6 +767,21 @@ function renderElement(el) {
       }
       ctx.drawImage(el.img, el.x, el.y, el.w, el.h);
     }
+  } else if (el.type === 'placeholder') {
+    ctx.fillStyle = '#1a1a2e';
+    ctx.fillRect(el.x, el.y, el.w, el.h);
+    ctx.strokeStyle = '#c8a84b55';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([8, 6]);
+    ctx.strokeRect(el.x + 8, el.y + 8, el.w - 16, el.h - 16);
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#c8a84b88';
+    ctx.font = '600 14px "Barlow Condensed"';
+    ctx.textAlign = 'center';
+    ctx.letterSpacing = '2px';
+    ctx.fillText('📷', el.x + el.w/2, el.y + el.h/2 - 10);
+    ctx.font = '600 11px "Barlow Condensed"';
+    ctx.fillText(el.label || 'SUBE TU FOTO AQUÍ', el.x + el.w/2, el.y + el.h/2 + 12);
   } else if (el.type === 'text') {
     ctx.fillStyle = el.color;
     ctx.font = `${el.fontWeight} ${el.fontSize}px '${el.fontFamily}'`;
@@ -658,10 +853,6 @@ function canvasMouseDown(e) {
     if (hit.id !== selectedId) saveState();
     selectedId = hit.id;
     dragging = { id: hit.id, offX: x - hit.x, offY: y - hit.y };
-    // Move to top
-    const idx = elements.findIndex(e => e.id === hit.id);
-    const [moved] = elements.splice(idx, 1);
-    elements.push(moved);
     renderAll();
   } else {
     selectedId = null;
@@ -757,6 +948,10 @@ function renderProps() {
   } else if (el.type === 'image') {
     html += `<div class="prop-section"><div class="prop-label">Imagen</div>
       <div class="prop-row"><label>Radio</label><input class="prop-input prop-input-sm" type="number" value="${el.radius||0}" onchange="setProp(${el.id},'radius',+this.value)"></div>
+    </div>`;
+  } else if (el.type === 'placeholder') {
+    html += `<div class="prop-section"><div class="prop-label">Placeholder de foto</div>
+      <p style="font-size:11px;color:var(--mut);line-height:1.5;">Ve a la pestaña <b>Fotos</b>, sube una imagen y haz clic en ella para reemplazar este placeholder.</p>
     </div>`;
   }
   // Layer controls
