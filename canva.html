@@ -440,6 +440,12 @@ function handlePhotoUpload(input) {
       const id = 'ph_' + nextId++;
       uploadedPhotos.push({ id, img, name: file.name, url });
       renderSidebar('photos');
+      // Auto-place into first placeholder if one exists
+      const firstPh = elements.find(e => e.type === 'placeholder');
+      if (firstPh) {
+        saveState();
+        replacePlaceholder(firstPh, { img, url });
+      }
     };
     img.src = url;
   });
@@ -448,22 +454,33 @@ function addPhotoToCanvas(photoId) {
   const ph = uploadedPhotos.find(p => p.id === photoId);
   if (!ph) return;
   saveState();
-  // If a placeholder is selected, replace it with the photo
+  // 1. If a placeholder is selected, replace it
   const sel = elements.find(e => e.id === selectedId);
   if (sel && sel.type === 'placeholder') {
-    const imgEl = makeImage(ph.img, ph.url, { x: sel.x, y: sel.y, w: sel.w, h: sel.h });
-    const idx = elements.findIndex(e => e.id === sel.id);
-    elements.splice(idx, 1, imgEl);
-    selectedId = imgEl.id;
-    renderAll();
+    replacePlaceholder(sel, ph);
     return;
   }
-  // Otherwise, insert photo after backgrounds but before text/overlays
-  const imgEl = makeImage(ph.img, ph.url);
-  // Find first text element index to insert before it
-  let insertIdx = elements.findIndex(e => e.type === 'text' || e.type === 'placeholder');
-  if (insertIdx === -1) insertIdx = elements.length;
-  elements.splice(insertIdx, 0, imgEl);
+  // 2. If any placeholder exists, replace the first one automatically
+  const firstPh = elements.find(e => e.type === 'placeholder');
+  if (firstPh) {
+    replacePlaceholder(firstPh, ph);
+    return;
+  }
+  // 3. No placeholders — add as full-canvas background image behind everything else
+  const imgEl = makeImage(ph.img, ph.url, { x: 0, y: 0, w: canvasW, h: canvasH });
+  // Insert at position 1 (after background rect if exists)
+  const bgIdx = elements[0] && elements[0].type === 'rect' && elements[0].w >= canvasW * 0.9 ? 1 : 0;
+  elements.splice(bgIdx, 0, imgEl);
+  selectedId = imgEl.id;
+  renderAll();
+}
+function replacePlaceholder(placeholder, photo) {
+  const imgEl = makeImage(photo.img, photo.url, {
+    x: placeholder.x, y: placeholder.y,
+    w: placeholder.w, h: placeholder.h
+  });
+  const idx = elements.findIndex(e => e.id === placeholder.id);
+  elements.splice(idx, 1, imgEl);
   selectedId = imgEl.id;
   renderAll();
 }
