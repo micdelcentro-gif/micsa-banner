@@ -4,146 +4,197 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MICSA · Diseñador de Publicidad</title>
-<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{--bg:#f5f5f7;--panel:#ffffff;--border:#e0e0e4;--acc:#b8952e;--txt:#1a1a1a;--mut:#7a7a8a;--green:#1a8a35;--red:#d42020;--in:#f0f0f3;--sel:#b8952e33;}
+:root{--bg:#f0f0f4;--panel:#fff;--border:#e2e2e8;--acc:#b8952e;--acc-light:#faf3dd;--txt:#1a1a2e;--mut:#8a8a9a;--green:#1a8a35;--red:#d42020;--in:#f5f5f8;--sidebar-bg:#1a1a2e;--sidebar-w:72px;--drawer-w:280px;}
 html,body{background:var(--bg);color:var(--txt);font-family:'Barlow',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column;user-select:none;}
+.mso{font-family:'Material Symbols Outlined';font-size:22px;font-weight:400;line-height:1;vertical-align:middle;}
 
 /* ── TOP BAR ── */
-#top{height:48px;min-height:48px;background:#ffffff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;z-index:100;}
-.logo-area{display:flex;align-items:center;gap:12px;}
-.logo{font-family:'Black Ops One',sans-serif;font-size:15px;letter-spacing:3px;color:var(--acc);}
-.logo-sub{font-size:10px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;}
+#top{height:52px;min-height:52px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;z-index:100;}
+.logo-area{display:flex;align-items:center;gap:10px;}
+.logo{font-family:'Black Ops One',sans-serif;font-size:16px;letter-spacing:3px;color:var(--acc);}
+.logo-sub{font-size:10px;color:var(--mut);letter-spacing:1.5px;text-transform:uppercase;}
+.top-center{display:flex;align-items:center;gap:6px;}
 .top-acts{display:flex;gap:8px;align-items:center;}
-.btn{font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 16px;border-radius:4px;cursor:pointer;border:1px solid transparent;transition:all .15s;display:flex;align-items:center;gap:6px;}
-.btn-acc{background:var(--acc);color:#000;border-color:var(--acc);}
-.btn-acc:hover{opacity:.85;}
-.btn-sec{background:transparent;color:var(--mut);border-color:var(--border);}
-.btn-sec:hover{border-color:var(--acc);color:var(--acc);}
-.btn-ghost{background:transparent;color:var(--mut);border:none;padding:7px 10px;}
-.btn-ghost:hover{color:var(--acc);}
+.btn{font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:.5px;padding:8px 16px;border-radius:8px;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.btn-acc{background:var(--acc);color:#fff;}
+.btn-acc:hover{opacity:.9;}
+.btn-ghost{background:transparent;color:var(--mut);padding:8px;border-radius:8px;border:none;cursor:pointer;font-size:14px;}
+.btn-ghost:hover{background:var(--in);color:var(--txt);}
+.btn-outline{background:#fff;color:var(--txt);border:1px solid var(--border);border-radius:8px;padding:7px 14px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;}
+.btn-outline:hover{border-color:var(--acc);color:var(--acc);}
 
 /* ── LAYOUT ── */
 #app{flex:1;display:flex;overflow:hidden;}
 
-/* ── LEFT SIDEBAR ── */
-#sidebar{width:260px;min-width:260px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
-.sb-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
-.sb-tab{flex:1;padding:10px 8px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mut);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;}
-.sb-tab:hover{color:var(--txt);}
-.sb-tab.active{color:var(--acc);border-bottom-color:var(--acc);}
-.sb-content{flex:1;overflow-y:auto;padding:12px;scrollbar-width:thin;scrollbar-color:#ccc transparent;}
-.sb-section{margin-bottom:16px;}
-.sb-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:8px;}
+/* ── ICON SIDEBAR (like Canva) ── */
+#icon-bar{width:var(--sidebar-w);background:var(--sidebar-bg);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;flex-shrink:0;z-index:50;}
+.ib-item{width:56px;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border-radius:10px;transition:all .12s;color:rgba(255,255,255,.5);}
+.ib-item:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);}
+.ib-item.active{background:rgba(255,255,255,.12);color:#fff;}
+.ib-item .mso{font-size:22px;}
+.ib-item span:last-child{font-size:8px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.ib-sep{width:36px;height:1px;background:rgba(255,255,255,.1);margin:6px 0;}
 
-/* Templates */
+/* ── DRAWER PANEL ── */
+#drawer{width:0;overflow:hidden;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;transition:width .2s ease;flex-shrink:0;}
+#drawer.open{width:var(--drawer-w);}
+#drawer-header{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+#drawer-title{font-size:14px;font-weight:700;color:var(--txt);}
+#drawer-close{background:none;border:none;cursor:pointer;color:var(--mut);font-size:18px;padding:4px;border-radius:6px;}
+#drawer-close:hover{background:var(--in);color:var(--txt);}
+#drawer-body{flex:1;overflow-y:auto;padding:0 14px 14px;scrollbar-width:thin;scrollbar-color:#ddd transparent;}
+.d-section{margin-bottom:16px;}
+.d-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:8px;padding-top:4px;}
+.d-search{width:100%;padding:8px 12px;background:var(--in);border:1px solid var(--border);border-radius:8px;font-family:'Barlow',sans-serif;font-size:12px;color:var(--txt);outline:none;margin-bottom:12px;}
+.d-search:focus{border-color:var(--acc);}
+
+/* Template cards */
 .tpl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.tpl-card{background:var(--in);border:1px solid var(--border);border-radius:4px;padding:8px;cursor:pointer;transition:all .15s;text-align:center;}
-.tpl-card:hover{border-color:var(--acc);}
-.tpl-card.active{border-color:var(--acc);background:#faf6eb;}
-.tpl-preview{width:100%;aspect-ratio:var(--ar,16/9);background:#e8e8ec;border-radius:2px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--mut);letter-spacing:1px;}
+.tpl-card{background:var(--in);border:1px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;transition:all .15s;text-align:center;}
+.tpl-card:hover{border-color:var(--acc);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.tpl-card.active{border-color:var(--acc);background:var(--acc-light);}
+.tpl-preview{width:100%;aspect-ratio:var(--ar,1/1);background:#e0e0e6;border-radius:4px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--mut);}
 .tpl-name{font-size:10px;font-weight:600;color:var(--txt);}
-.tpl-size{font-size:8px;color:var(--mut);margin-top:2px;}
+.tpl-size{font-size:8px;color:var(--mut);margin-top:1px;}
 
-/* Elements */
-.el-btn{width:100%;background:var(--in);border:1px solid var(--border);border-radius:4px;padding:10px 12px;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:10px;margin-bottom:6px;color:var(--txt);font-family:'Barlow',sans-serif;font-size:12px;}
-.el-btn:hover{border-color:var(--acc);color:var(--acc);}
-.el-btn .icon{font-size:18px;width:28px;text-align:center;}
+/* Element buttons */
+.el-btn{width:100%;background:var(--in);border:1px solid var(--border);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .12s;text-align:left;display:flex;align-items:center;gap:10px;margin-bottom:6px;color:var(--txt);font-family:'Barlow',sans-serif;font-size:12px;font-weight:500;}
+.el-btn:hover{border-color:var(--acc);background:var(--acc-light);color:var(--acc);}
+.el-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:6px;font-size:16px;border:1px solid var(--border);}
+
+/* Quick design cards */
+.qd-card{background:var(--in);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .12s;margin-bottom:8px;}
+.qd-card:hover{border-color:var(--acc);box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.qd-name{font-size:12px;font-weight:700;color:var(--txt);}
+.qd-desc{font-size:10px;color:var(--mut);margin-top:2px;line-height:1.4;}
 
 /* Photos */
-.upload-zone{width:100%;padding:24px 12px;border:2px dashed var(--border);border-radius:6px;text-align:center;cursor:pointer;position:relative;transition:border-color .2s;margin-bottom:8px;}
-.upload-zone:hover{border-color:var(--acc);}
+.upload-zone{width:100%;padding:28px 12px;border:2px dashed var(--border);border-radius:10px;text-align:center;cursor:pointer;position:relative;transition:border-color .2s;margin-bottom:10px;background:var(--in);}
+.upload-zone:hover{border-color:var(--acc);background:var(--acc-light);}
 .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.upload-zone .uz-icon{font-size:24px;margin-bottom:4px;}
-.upload-zone .uz-text{font-size:10px;color:var(--mut);letter-spacing:1px;}
-.photo-thumb{width:100%;aspect-ratio:16/9;background:var(--in);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;position:relative;margin-bottom:6px;}
+.upload-zone .uz-icon{font-size:28px;margin-bottom:6px;color:var(--acc);}
+.upload-zone .uz-text{font-size:11px;color:var(--mut);}
+.photo-thumb{width:100%;aspect-ratio:16/9;background:var(--in);border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;position:relative;margin-bottom:6px;transition:all .12s;}
+.photo-thumb:hover{border-color:var(--acc);box-shadow:0 2px 8px rgba(0,0,0,.08);}
 .photo-thumb img{width:100%;height:100%;object-fit:cover;}
-.photo-thumb .del{position:absolute;top:4px;right:4px;width:20px;height:20px;background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:3px;color:var(--red);font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.photo-thumb .del{position:absolute;top:6px;right:6px;width:22px;height:22px;background:rgba(255,255,255,.9);border:1px solid var(--border);border-radius:6px;color:var(--red);font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .photo-thumb .del:hover{background:var(--red);color:#fff;}
 
+/* Layers */
+.layer-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:8px;margin-bottom:4px;cursor:pointer;transition:all .12s;background:#fff;}
+.layer-item:hover{border-color:var(--acc);}
+.layer-item.active{border-color:var(--acc);background:var(--acc-light);}
+.layer-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--in);border-radius:6px;flex-shrink:0;}
+.layer-info{flex:1;min-width:0;}
+.layer-name{font-size:10px;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.layer-type{font-size:8px;color:var(--mut);letter-spacing:.5px;}
+.layer-acts{display:flex;gap:3px;}
+.layer-btn{width:22px;height:22px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:10px;color:var(--mut);transition:all .12s;}
+.layer-btn:hover{border-color:var(--acc);color:var(--acc);}
+.layer-btn.del:hover{border-color:var(--red);color:var(--red);}
+
 /* ── CANVAS AREA ── */
-#canvas-area{flex:1;display:flex;align-items:center;justify-content:center;background:#e8e8ec;overflow:hidden;position:relative;}
-#canvas-wrap{position:relative;box-shadow:0 0 0 1px var(--border),0 8px 30px rgba(0,0,0,.12);border-radius:2px;}
+#canvas-area{flex:1;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden;position:relative;}
+#canvas-wrap{position:relative;box-shadow:0 2px 20px rgba(0,0,0,.1);border-radius:4px;}
 canvas#main{display:block;cursor:default;}
-.handle{position:absolute;width:10px;height:10px;background:var(--acc);border:2px solid #fff;border-radius:2px;cursor:pointer;z-index:20;transform:translate(-50%,-50%);display:none;}
-.selection-box{position:absolute;border:2px solid var(--acc);pointer-events:none;z-index:15;display:none;}
 
 /* ── RIGHT PANEL ── */
-#props{width:240px;min-width:240px;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ccc transparent;}
-#props-header{padding:10px 14px;background:#fafafa;border-bottom:1px solid var(--border);flex-shrink:0;}
-#props-header span{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mut);}
-.prop-section{padding:12px 14px;border-bottom:1px solid var(--border);}
-.prop-label{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:8px;}
+#props{width:250px;min-width:250px;background:#fff;border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ddd transparent;}
+#props-header{padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+#props-header span{font-size:12px;font-weight:700;color:var(--txt);}
+.prop-section{padding:14px 16px;border-bottom:1px solid var(--border);}
+.prop-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--acc);margin-bottom:10px;}
 .prop-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.prop-row label{font-size:10px;color:var(--mut);min-width:28px;letter-spacing:.5px;}
-.prop-input{flex:1;background:var(--in);border:1px solid var(--border);border-radius:3px;padding:5px 8px;color:var(--txt);font-family:'Barlow',sans-serif;font-size:11px;outline:none;}
+.prop-row label{font-size:11px;color:var(--mut);min-width:32px;}
+.prop-input{flex:1;background:var(--in);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--txt);font-family:'Barlow',sans-serif;font-size:12px;outline:none;}
 .prop-input:focus{border-color:var(--acc);}
-.prop-input-sm{width:60px;}
-.prop-color{width:28px;height:28px;border:1px solid var(--border);border-radius:3px;cursor:pointer;padding:0;background:none;}
+.prop-input-sm{width:65px;}
+.prop-color{width:30px;height:30px;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:0;background:none;}
 .prop-color::-webkit-color-swatch-wrapper{padding:2px;}
-.prop-color::-webkit-color-swatch{border:none;border-radius:2px;}
+.prop-color::-webkit-color-swatch{border:none;border-radius:4px;}
 select.prop-input{cursor:pointer;}
 .prop-range{flex:1;accent-color:var(--acc);}
-.prop-delete{width:100%;background:transparent;border:1px solid #f0d0d0;color:var(--red);font-family:'Barlow',sans-serif;font-size:10px;font-weight:600;letter-spacing:1px;padding:7px;border-radius:3px;cursor:pointer;margin-top:4px;}
+.prop-delete{width:100%;background:#fff;border:1px solid #f0d0d0;color:var(--red);font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;padding:8px;border-radius:8px;cursor:pointer;margin-top:6px;}
 .prop-delete:hover{background:#fde8e8;}
 
 /* ── ZOOM BAR ── */
-#zoom-bar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.92);border:1px solid var(--border);border-radius:6px;padding:6px 12px;backdrop-filter:blur(8px);}
-#zoom-bar .btn-ghost{padding:4px 8px;font-size:14px;}
-#zoom-val{font-size:10px;color:var(--mut);letter-spacing:1px;min-width:40px;text-align:center;}
+#zoom-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:10px;padding:6px 14px;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,.06);}
+#zoom-bar .btn-ghost{padding:4px 8px;font-size:16px;}
+#zoom-val{font-size:11px;color:var(--mut);min-width:40px;text-align:center;font-weight:600;}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div id="top">
   <div class="logo-area">
     <span class="logo">MICSA</span>
-    <span class="logo-sub">Diseñador de Publicidad</span>
+    <span class="logo-sub">Diseñador</span>
+  </div>
+  <div class="top-center">
+    <button class="btn-outline" onclick="undoAction()"><span class="mso" style="font-size:16px">undo</span> Deshacer</button>
+    <button class="btn-outline" onclick="redoAction()"><span class="mso" style="font-size:16px">redo</span> Rehacer</button>
   </div>
   <div class="top-acts">
-    <button class="btn btn-sec" onclick="undoAction()">↩ Deshacer</button>
-    <button class="btn btn-sec" onclick="redoAction()">↪ Rehacer</button>
-    <button class="btn btn-acc" onclick="exportCanvas()">⬇ Exportar PNG</button>
+    <button class="btn-outline" onclick="exportCanvas()"><span class="mso" style="font-size:16px">download</span> Descargar</button>
   </div>
 </div>
 
 <div id="app">
-  <!-- LEFT SIDEBAR -->
-  <div id="sidebar">
-    <div class="sb-tabs">
-      <div class="sb-tab active" data-tab="templates" onclick="switchTab(this)">Plantillas</div>
-      <div class="sb-tab" data-tab="elements" onclick="switchTab(this)">Elementos</div>
-      <div class="sb-tab" data-tab="photos" onclick="switchTab(this)">Fotos</div>
-      <div class="sb-tab" data-tab="brand" onclick="switchTab(this)">Marca</div>
+  <!-- ICON SIDEBAR -->
+  <div id="icon-bar">
+    <div class="ib-item active" data-panel="designs" onclick="openPanel(this,'designs')">
+      <span class="mso">dashboard</span><span>Diseños</span>
     </div>
-    <div class="sb-content" id="sb-body"></div>
+    <div class="ib-item" data-panel="elements" onclick="openPanel(this,'elements')">
+      <span class="mso">widgets</span><span>Elementos</span>
+    </div>
+    <div class="ib-item" data-panel="text" onclick="openPanel(this,'text')">
+      <span class="mso">title</span><span>Texto</span>
+    </div>
+    <div class="ib-item" data-panel="photos" onclick="openPanel(this,'photos')">
+      <span class="mso">cloud_upload</span><span>Subidos</span>
+    </div>
+    <div class="ib-sep"></div>
+    <div class="ib-item" data-panel="layers" onclick="openPanel(this,'layers')">
+      <span class="mso">layers</span><span>Capas</span>
+    </div>
+    <div class="ib-item" data-panel="brand" onclick="openPanel(this,'brand')">
+      <span class="mso">palette</span><span>Marca</span>
+    </div>
+    <div class="ib-item" data-panel="format" onclick="openPanel(this,'format')">
+      <span class="mso">crop</span><span>Formato</span>
+    </div>
+  </div>
+
+  <!-- DRAWER -->
+  <div id="drawer" class="open">
+    <div id="drawer-header">
+      <span id="drawer-title">Diseños</span>
+      <button id="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div id="drawer-body"></div>
   </div>
 
   <!-- CANVAS -->
   <div id="canvas-area" onmousedown="canvasMouseDown(event)" onmousemove="canvasMouseMove(event)" onmouseup="canvasMouseUp(event)">
     <div id="canvas-wrap">
       <canvas id="main"></canvas>
-      <div class="selection-box" id="sel-box"></div>
     </div>
     <div id="zoom-bar">
       <button class="btn-ghost" onclick="zoomBy(-0.1)">−</button>
       <span id="zoom-val">100%</span>
       <button class="btn-ghost" onclick="zoomBy(0.1)">+</button>
-      <button class="btn-ghost" onclick="zoomFit()">⊡</button>
+      <button class="btn-ghost" onclick="zoomFit()"><span class="mso" style="font-size:16px">fit_screen</span></button>
     </div>
   </div>
 
   <!-- RIGHT PROPERTIES -->
   <div id="props">
     <div id="props-header"><span>Propiedades</span></div>
-    <div id="props-body">
-      <div class="prop-section">
-        <div class="prop-label">Canvas</div>
-        <p style="font-size:11px;color:var(--mut);line-height:1.5;">Selecciona un elemento en el canvas para editar sus propiedades.</p>
-      </div>
-    </div>
+    <div id="props-body"></div>
   </div>
 </div>
 
@@ -152,223 +203,168 @@ select.prop-input{cursor:pointer;}
 //  STATE
 // ═══════════════════════════════════════════════════
 let canvasW = 1080, canvasH = 1080;
-let zoom = 1, panX = 0, panY = 0;
+let zoom = 1;
 let elements = [];
 let selectedId = null;
-let dragging = null; // { id, offX, offY }
-let resizing = null;
-let uploadedPhotos = []; // { id, img, name, url }
+let dragging = null, resizing = null;
+let uploadedPhotos = [];
 let undoStack = [], redoStack = [];
 let nextId = 1;
+let canvasBg = '#06060a';
+let currentPanel = 'designs';
 
 const TEMPLATES = [
-  { name: 'Instagram Post', w: 1080, h: 1080, icon: '◻', ar: '1/1' },
-  { name: 'Instagram Story', w: 1080, h: 1920, icon: '▯', ar: '9/16' },
-  { name: 'Facebook Post', w: 1200, h: 628, icon: '▭', ar: '1200/628' },
-  { name: 'Facebook Cover', w: 820, h: 312, icon: '▬', ar: '820/312' },
-  { name: 'LinkedIn Post', w: 1200, h: 627, icon: '▭', ar: '1200/627' },
-  { name: 'LinkedIn Banner', w: 1584, h: 396, icon: '▬', ar: '1584/396' },
-  { name: 'Twitter Post', w: 1200, h: 675, icon: '▭', ar: '16/9' },
-  { name: 'YouTube Thumb', w: 1280, h: 720, icon: '▶', ar: '16/9' },
-  { name: 'WhatsApp Status', w: 1080, h: 1920, icon: '▯', ar: '9/16' },
-  { name: 'Banner Web', w: 1920, h: 600, icon: '▬', ar: '1920/600' },
-  { name: 'Tarjeta Visita', w: 1050, h: 600, icon: '▭', ar: '1050/600' },
-  { name: 'Personalizado', w: 1080, h: 1080, icon: '✎', ar: '1/1', custom: true },
+  { name:'Instagram Post', w:1080, h:1080, ar:'1/1' },
+  { name:'Instagram Story', w:1080, h:1920, ar:'9/16' },
+  { name:'Facebook Post', w:1200, h:628, ar:'1200/628' },
+  { name:'Facebook Cover', w:820, h:312, ar:'820/312' },
+  { name:'LinkedIn Post', w:1200, h:627, ar:'1200/627' },
+  { name:'LinkedIn Banner', w:1584, h:396, ar:'1584/396' },
+  { name:'Twitter/X', w:1200, h:675, ar:'16/9' },
+  { name:'YouTube Thumb', w:1280, h:720, ar:'16/9' },
+  { name:'WhatsApp', w:1080, h:1920, ar:'9/16' },
+  { name:'Banner Web', w:1920, h:600, ar:'1920/600' },
+  { name:'Tarjeta', w:1050, h:600, ar:'1050/600' },
+  { name:'Personalizado', w:1080, h:1080, ar:'1/1', custom:true },
 ];
 
 const BRAND = {
-  colors: ['#c8a84b', '#06060a', '#f0f4f8', '#1a1a2e', '#55667a', '#3fb950', '#f85149', '#2e3e50'],
-  fonts: ['Barlow Condensed', 'Barlow', 'Black Ops One', 'Arial', 'Georgia', 'Courier New'],
+  colors:['#c8a84b','#06060a','#f0f4f8','#1a1a2e','#55667a','#3fb950','#f85149','#2e3e50','#ffffff','#b8952e'],
+  fonts:['Barlow Condensed','Barlow','Black Ops One','Arial','Georgia','Courier New'],
 };
 
 // ═══════════════════════════════════════════════════
-//  ELEMENT FACTORY
+//  ELEMENT FACTORIES
 // ═══════════════════════════════════════════════════
-function makeText(text, opts = {}) {
-  return {
-    id: nextId++, type: 'text',
-    x: opts.x ?? canvasW / 2 - 150, y: opts.y ?? canvasH / 2 - 20,
-    w: opts.w ?? 300, h: opts.h ?? 50,
-    text: text,
-    fontFamily: opts.fontFamily ?? 'Barlow Condensed',
-    fontSize: opts.fontSize ?? 48,
-    fontWeight: opts.fontWeight ?? '700',
-    color: opts.color ?? '#f0f4f8',
-    align: opts.align ?? 'center',
-    opacity: opts.opacity ?? 1,
-    letterSpacing: opts.letterSpacing ?? 0,
-    lineHeight: opts.lineHeight ?? 1.2,
-    locked: false,
-  };
+function makeText(text, o={}) {
+  return { id:nextId++, type:'text', x:o.x??canvasW/2-150, y:o.y??canvasH/2-20, w:o.w??300, h:o.h??50,
+    text, fontFamily:o.fontFamily??'Barlow Condensed', fontSize:o.fontSize??48, fontWeight:o.fontWeight??'700',
+    color:o.color??'#f0f4f8', align:o.align??'center', opacity:o.opacity??1,
+    letterSpacing:o.letterSpacing??0, lineHeight:o.lineHeight??1.2, locked:false };
 }
-function makeRect(opts = {}) {
-  return {
-    id: nextId++, type: 'rect',
-    x: opts.x ?? canvasW / 2 - 100, y: opts.y ?? canvasH / 2 - 50,
-    w: opts.w ?? 200, h: opts.h ?? 100,
-    color: opts.color ?? '#c8a84b',
-    opacity: opts.opacity ?? 1,
-    radius: opts.radius ?? 0,
-    borderColor: opts.borderColor ?? 'none',
-    borderWidth: opts.borderWidth ?? 0,
-    locked: false,
-  };
+function makeRect(o={}) {
+  return { id:nextId++, type:'rect', x:o.x??canvasW/2-100, y:o.y??canvasH/2-50, w:o.w??200, h:o.h??100,
+    color:o.color??'#c8a84b', opacity:o.opacity??1, radius:o.radius??0,
+    borderColor:o.borderColor??'none', borderWidth:o.borderWidth??0, locked:false };
 }
-function makeLine(opts = {}) {
-  return {
-    id: nextId++, type: 'line',
-    x: opts.x ?? canvasW / 2 - 150, y: opts.y ?? canvasH / 2,
-    w: opts.w ?? 300, h: opts.h ?? 4,
-    color: opts.color ?? '#c8a84b',
-    opacity: opts.opacity ?? 0.8,
-    locked: false,
-  };
+function makeLine(o={}) {
+  return { id:nextId++, type:'line', x:o.x??canvasW/2-150, y:o.y??canvasH/2, w:o.w??300, h:o.h??4,
+    color:o.color??'#c8a84b', opacity:o.opacity??0.8, locked:false };
 }
-function makeImage(img, url, opts = {}) {
-  const ar = img.naturalWidth / img.naturalHeight;
-  const fitW = Math.min(canvasW * 0.6, img.naturalWidth);
-  const fitH = fitW / ar;
-  return {
-    id: nextId++, type: 'image',
-    x: opts.x ?? (canvasW - fitW) / 2, y: opts.y ?? (canvasH - fitH) / 2,
-    w: opts.w ?? fitW, h: opts.h ?? fitH,
-    img, url,
-    opacity: opts.opacity ?? 1,
-    radius: opts.radius ?? 0,
-    locked: false,
-  };
+function makeImage(img, url, o={}) {
+  const ar = img.naturalWidth/img.naturalHeight;
+  const fw = Math.min(canvasW*0.6, img.naturalWidth), fh = fw/ar;
+  return { id:nextId++, type:'image', x:o.x??(canvasW-fw)/2, y:o.y??(canvasH-fh)/2,
+    w:o.w??fw, h:o.h??fh, img, url, opacity:o.opacity??1, radius:o.radius??0, locked:false };
 }
-function makePlaceholder(opts = {}) {
-  return {
-    id: nextId++, type: 'placeholder',
-    x: opts.x ?? 0, y: opts.y ?? 0,
-    w: opts.w ?? canvasW * 0.5, h: opts.h ?? canvasH,
-    label: opts.label ?? 'SUBE TU FOTO AQUÍ',
-    opacity: 1,
-    locked: false,
-  };
+function makePlaceholder(o={}) {
+  return { id:nextId++, type:'placeholder', x:o.x??0, y:o.y??0, w:o.w??canvasW*0.5, h:o.h??canvasH,
+    label:o.label??'SUBE TU FOTO', opacity:1, locked:false };
 }
 
 // ═══════════════════════════════════════════════════
 //  UNDO / REDO
 // ═══════════════════════════════════════════════════
 function saveState() {
-  undoStack.push(JSON.stringify(elements.map(e => {
-    const c = {...e};
-    if (c.img) { c._hasImg = true; delete c.img; }
-    return c;
-  })));
+  undoStack.push(JSON.stringify(elements.map(e => { const c={...e}; if(c.img){c._hasImg=true;delete c.img;} return c; })));
   if (undoStack.length > 50) undoStack.shift();
   redoStack = [];
 }
 function undoAction() {
   if (!undoStack.length) return;
-  redoStack.push(JSON.stringify(elements.map(e => {
-    const c = {...e}; if (c.img) { c._hasImg = true; delete c.img; } return c;
-  })));
-  const prev = JSON.parse(undoStack.pop());
-  elements = prev.map(e => {
-    if (e._hasImg) {
-      const ph = uploadedPhotos.find(p => p.url === e.url);
-      if (ph) e.img = ph.img;
-      delete e._hasImg;
-    }
-    return e;
-  });
-  selectedId = null;
-  renderAll();
+  redoStack.push(JSON.stringify(elements.map(e => { const c={...e}; if(c.img){c._hasImg=true;delete c.img;} return c; })));
+  elements = JSON.parse(undoStack.pop()).map(restoreImg);
+  selectedId = null; renderAll();
 }
 function redoAction() {
   if (!redoStack.length) return;
-  undoStack.push(JSON.stringify(elements.map(e => {
-    const c = {...e}; if (c.img) { c._hasImg = true; delete c.img; } return c;
-  })));
-  const next = JSON.parse(redoStack.pop());
-  elements = next.map(e => {
-    if (e._hasImg) {
-      const ph = uploadedPhotos.find(p => p.url === e.url);
-      if (ph) e.img = ph.img;
-      delete e._hasImg;
-    }
-    return e;
-  });
-  selectedId = null;
-  renderAll();
+  undoStack.push(JSON.stringify(elements.map(e => { const c={...e}; if(c.img){c._hasImg=true;delete c.img;} return c; })));
+  elements = JSON.parse(redoStack.pop()).map(restoreImg);
+  selectedId = null; renderAll();
+}
+function restoreImg(e) {
+  if (e._hasImg) { const p=uploadedPhotos.find(p=>p.url===e.url); if(p) e.img=p.img; delete e._hasImg; }
+  return e;
 }
 
 // ═══════════════════════════════════════════════════
-//  SIDEBAR TABS
+//  SIDEBAR PANELS
 // ═══════════════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.sb-tab').forEach(t => t.classList.remove('active'));
-  tab.classList.add('active');
-  renderSidebar(tab.dataset.tab);
+function openPanel(el, panel) {
+  document.querySelectorAll('.ib-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  currentPanel = panel;
+  document.getElementById('drawer').classList.add('open');
+  renderDrawer(panel);
 }
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.querySelectorAll('.ib-item').forEach(i => i.classList.remove('active'));
+}
+function renderDrawer(panel) {
+  const body = document.getElementById('drawer-body');
+  const title = document.getElementById('drawer-title');
+  const W = canvasW, H = canvasH;
 
-function renderSidebar(tab) {
-  const body = document.getElementById('sb-body');
-  if (tab === 'templates') {
+  if (panel === 'designs') {
+    title.textContent = 'Diseños';
     body.innerHTML = `
-      <div class="sb-section">
-        <div class="sb-label">Formato</div>
-        <div class="tpl-grid">
-          ${TEMPLATES.map((t, i) => `
-            <div class="tpl-card ${canvasW === t.w && canvasH === t.h ? 'active' : ''}" onclick="selectTemplate(${i})" style="--ar:${t.ar}">
-              <div class="tpl-preview">${t.icon}</div>
-              <div class="tpl-name">${t.name}</div>
-              <div class="tpl-size">${t.w}×${t.h}</div>
-            </div>
-          `).join('')}
-        </div>
+      <div class="d-section">
+        <div class="d-label">Montajes e Izajes</div>
+        <div class="qd-card" onclick="applyQuickDesign('izaje')"><div class="qd-name">🏗 Izaje / Maniobra</div><div class="qd-desc">Foto izquierda + stats de tonelaje</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('montaje')"><div class="qd-name">⚙ Montaje Industrial</div><div class="qd-desc">Foto fondo + overlay + tags</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('lowboy')"><div class="qd-name">🚛 Transporte / Lowboy</div><div class="qd-desc">Split horizontal + cobertura</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('proyecto')"><div class="qd-name">✅ Proyecto Completado</div><div class="qd-desc">2 fotos + panel de datos</div></div>
       </div>
-      <div class="sb-section">
-        <div class="sb-label">Montajes e Izajes</div>
-        <div class="el-btn" onclick="applyQuickDesign('izaje')"><span class="icon">🏗</span> Izaje / Maniobra</div>
-        <div class="el-btn" onclick="applyQuickDesign('montaje')"><span class="icon">⚙</span> Montaje Industrial</div>
-        <div class="el-btn" onclick="applyQuickDesign('lowboy')"><span class="icon">🚛</span> Transporte / Lowboy</div>
-        <div class="el-btn" onclick="applyQuickDesign('proyecto')"><span class="icon">✅</span> Proyecto Completado</div>
+      <div class="d-section">
+        <div class="d-label">Marketing</div>
+        <div class="qd-card" onclick="applyQuickDesign('dato')"><div class="qd-name">📊 Dato Impactante</div><div class="qd-desc">Número gigante + foto fondo</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('antesdespues')"><div class="qd-name">↔ Antes / Después</div><div class="qd-desc">Split 50/50 para comparación</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('servicio')"><div class="qd-name">📋 Lista de Servicios</div><div class="qd-desc">Foto + 4 servicios listados</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('seguridad')"><div class="qd-name">🛡 Seguridad Industrial</div><div class="qd-desc">Checklist de certificaciones</div></div>
       </div>
-      <div class="sb-section">
-        <div class="sb-label">Marketing</div>
-        <div class="el-btn" onclick="applyQuickDesign('dato')"><span class="icon">📊</span> Dato impactante</div>
-        <div class="el-btn" onclick="applyQuickDesign('antesdespues')"><span class="icon">↔</span> Antes / Después</div>
-        <div class="el-btn" onclick="applyQuickDesign('servicio')"><span class="icon">📋</span> Lista de servicios</div>
-        <div class="el-btn" onclick="applyQuickDesign('seguridad')"><span class="icon">🛡</span> Seguridad Industrial</div>
-      </div>
-      <div class="sb-section">
-        <div class="sb-label">Corporativo</div>
-        <div class="el-btn" onclick="applyQuickDesign('contacto')"><span class="icon">📞</span> Tarjeta de contacto</div>
-        <div class="el-btn" onclick="applyQuickDesign('cotizacion')"><span class="icon">📄</span> Pide tu cotización</div>
-        <div class="el-btn" onclick="applyQuickDesign('equipo')"><span class="icon">👷</span> Nuestro equipo</div>
+      <div class="d-section">
+        <div class="d-label">Corporativo</div>
+        <div class="qd-card" onclick="applyQuickDesign('contacto')"><div class="qd-name">📞 Contacto</div><div class="qd-desc">Datos de MICSA + foto</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('cotizacion')"><div class="qd-name">📄 Pide tu Cotización</div><div class="qd-desc">Call-to-action con teléfono</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('equipo')"><div class="qd-name">👷 Nuestro Equipo</div><div class="qd-desc">Foto del equipo + texto</div></div>
       </div>`;
-  } else if (tab === 'elements') {
+  } else if (panel === 'elements') {
+    title.textContent = 'Elementos';
     body.innerHTML = `
-      <div class="sb-section">
-        <div class="sb-label">Texto</div>
-        <div class="el-btn" onclick="addHeading()"><span class="icon">H</span> Título grande</div>
-        <div class="el-btn" onclick="addSubheading()"><span class="icon">h</span> Subtítulo</div>
-        <div class="el-btn" onclick="addBody()"><span class="icon">¶</span> Texto cuerpo</div>
-        <div class="el-btn" onclick="addBrandName()"><span class="icon">★</span> MICSA (marca)</div>
+      <div class="d-section">
+        <div class="d-label">Formas</div>
+        <div class="el-btn" onclick="addRect()"><div class="el-icon">◻</div> Rectángulo</div>
+        <div class="el-btn" onclick="addLine()"><div class="el-icon">─</div> Línea</div>
+        <div class="el-btn" onclick="addAccentBar()"><div class="el-icon">▐</div> Barra de acento</div>
+        <div class="el-btn" onclick="addOverlay()"><div class="el-icon">▓</div> Overlay oscuro</div>
       </div>
-      <div class="sb-section">
-        <div class="sb-label">Formas</div>
-        <div class="el-btn" onclick="addRect()"><span class="icon">◻</span> Rectángulo</div>
-        <div class="el-btn" onclick="addLine()"><span class="icon">─</span> Línea</div>
-        <div class="el-btn" onclick="addAccentBar()"><span class="icon">▐</span> Barra de acento</div>
-        <div class="el-btn" onclick="addOverlay()"><span class="icon">▓</span> Overlay oscuro</div>
-      </div>
-      <div class="sb-section">
-        <div class="sb-label">Composición</div>
-        <div class="el-btn" onclick="addTag()"><span class="icon">⊞</span> Etiqueta / Tag</div>
-        <div class="el-btn" onclick="addStatBox()"><span class="icon">▣</span> Caja de estadística</div>
+      <div class="d-section">
+        <div class="d-label">Composición</div>
+        <div class="el-btn" onclick="addTag()"><div class="el-icon">⊞</div> Etiqueta / Tag</div>
+        <div class="el-btn" onclick="addStatBox()"><div class="el-icon">▣</div> Caja de estadística</div>
       </div>`;
-  } else if (tab === 'photos') {
+  } else if (panel === 'text') {
+    title.textContent = 'Texto';
     body.innerHTML = `
-      <div class="sb-section">
-        <div class="sb-label">Subir imágenes</div>
+      <div class="d-section">
+        <div class="d-label">Agregar texto</div>
+        <div class="el-btn" onclick="addHeading()" style="font-size:18px;font-weight:900;padding:14px 12px;">Título grande</div>
+        <div class="el-btn" onclick="addSubheading()" style="font-size:14px;font-weight:600;color:var(--acc);padding:12px;">Subtítulo</div>
+        <div class="el-btn" onclick="addBody()" style="font-size:12px;font-weight:400;padding:10px 12px;">Texto cuerpo</div>
+        <div class="el-btn" onclick="addBrandName()" style="font-family:'Black Ops One';font-size:16px;padding:12px;">MICSA</div>
+      </div>
+      <div class="d-section">
+        <div class="d-label">Fuentes disponibles</div>
+        ${BRAND.fonts.map(f => `<div class="el-btn" onclick="applyBrandFont('${f}')" style="font-family:'${f}';font-size:14px;">${f}</div>`).join('')}
+      </div>`;
+  } else if (panel === 'photos') {
+    title.textContent = 'Subidos';
+    body.innerHTML = `
+      <div class="d-section">
         <div class="upload-zone">
-          <div class="uz-icon">📷</div>
-          <div class="uz-text">Click o arrastra una imagen</div>
+          <div class="uz-icon"><span class="mso" style="font-size:32px">cloud_upload</span></div>
+          <div class="uz-text">Sube tus imágenes</div>
           <input type="file" accept="image/*" multiple onchange="handlePhotoUpload(this)">
         </div>
         ${uploadedPhotos.map(p => `
@@ -377,56 +373,114 @@ function renderSidebar(tab) {
             <div class="del" onclick="event.stopPropagation();removePhoto('${p.id}')">✕</div>
           </div>
         `).join('')}
-        ${uploadedPhotos.length === 0 ? '<p style="font-size:10px;color:var(--mut);text-align:center;">Sube fotos para usarlas en tu diseño</p>' : '<p style="font-size:9px;color:var(--acc);text-align:center;margin-top:8px;line-height:1.5;">💡 Tip: Selecciona un placeholder en el canvas y luego haz clic en la foto para reemplazarlo</p>'}
+        ${uploadedPhotos.length > 0 ? '<p style="font-size:10px;color:var(--acc);text-align:center;margin-top:6px;">Clic en una foto para agregarla al canvas</p>' : '<p style="font-size:11px;color:var(--mut);text-align:center;">Sube fotos de tus proyectos</p>'}
       </div>`;
-  } else if (tab === 'brand') {
+  } else if (panel === 'layers') {
+    title.textContent = 'Capas';
+    const icons = { rect:'◻', text:'T', image:'🖼', line:'─', placeholder:'📷' };
+    const nameOf = (el) => {
+      if (el.type==='text') return el.text.substring(0,22)+(el.text.length>22?'…':'');
+      if (el.type==='image') return 'Imagen';
+      if (el.type==='placeholder') return el.label||'Placeholder';
+      if (el.type==='rect') {
+        if (el.w>=canvasW*0.9 && el.h>=canvasH*0.9 && el.opacity<0.7) return 'Overlay';
+        if (el.w>=canvasW*0.9 && el.h>=canvasH*0.9) return 'Fondo';
+        if (el.w<=8) return 'Barra vertical';
+        if (el.h<=8) return 'Barra horizontal';
+        return 'Rectángulo';
+      }
+      if (el.type==='line') return 'Línea';
+      return el.type;
+    };
+    const rev = [...elements].reverse();
     body.innerHTML = `
-      <div class="sb-section">
-        <div class="sb-label">Colores de marca</div>
+      <div class="d-section">
+        <div class="d-label">Capas (${elements.length})</div>
+        ${rev.map(el => `
+          <div class="layer-item ${el.id===selectedId?'active':''}" onclick="selectLayer(${el.id})">
+            <div class="layer-icon">${icons[el.type]||'?'}</div>
+            <div class="layer-info">
+              <div class="layer-name">${nameOf(el)}</div>
+              <div class="layer-type">${Math.round(el.w)}×${Math.round(el.h)} · ${Math.round((el.opacity??1)*100)}%</div>
+            </div>
+            <div class="layer-acts">
+              <div class="layer-btn" onclick="event.stopPropagation();moveLayer(${el.id},1)">↑</div>
+              <div class="layer-btn" onclick="event.stopPropagation();moveLayer(${el.id},-1)">↓</div>
+              <div class="layer-btn del" onclick="event.stopPropagation();deleteEl(${el.id})">✕</div>
+            </div>
+          </div>
+        `).join('')}
+        ${elements.length===0?'<p style="font-size:11px;color:var(--mut);text-align:center;margin-top:16px;">Vacío. Selecciona un diseño para empezar.</p>':''}
+      </div>`;
+  } else if (panel === 'brand') {
+    title.textContent = 'Marca';
+    body.innerHTML = `
+      <div class="d-section">
+        <div class="d-label">Colores de marca</div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          ${BRAND.colors.map(c => `<div style="width:32px;height:32px;background:${c};border:1px solid var(--border);border-radius:4px;cursor:pointer;" title="${c}" onclick="applyBrandColor('${c}')"></div>`).join('')}
+          ${BRAND.colors.map(c => `<div style="width:36px;height:36px;background:${c};border:1px solid var(--border);border-radius:8px;cursor:pointer;" title="${c}" onclick="applyBrandColor('${c}')"></div>`).join('')}
         </div>
       </div>
-      <div class="sb-section">
-        <div class="sb-label">Fuentes</div>
-        ${BRAND.fonts.map(f => `<div class="el-btn" onclick="applyBrandFont('${f}')" style="font-family:'${f}';font-size:14px;">${f}</div>`).join('')}
-      </div>
-      <div class="sb-section">
-        <div class="sb-label">Fondo del canvas</div>
+      <div class="d-section">
+        <div class="d-label">Fondo del canvas</div>
         <div class="prop-row">
           <label>Color</label>
-          <input type="color" class="prop-color" value="#06060a" onchange="canvasBg=this.value;renderAll()">
+          <input type="color" class="prop-color" value="${canvasBg}" onchange="canvasBg=this.value;renderAll()">
+          <span style="font-size:10px;color:var(--mut);">${canvasBg}</span>
+        </div>
+      </div>`;
+  } else if (panel === 'format') {
+    title.textContent = 'Formato';
+    body.innerHTML = `
+      <div class="d-section">
+        <div class="d-label">Tamaño del canvas</div>
+        <div class="prop-row" style="margin-bottom:12px;">
+          <label>W</label><input class="prop-input prop-input-sm" type="number" value="${canvasW}" onchange="canvasW=+this.value;setupCanvas();renderAll()">
+          <label>H</label><input class="prop-input prop-input-sm" type="number" value="${canvasH}" onchange="canvasH=+this.value;setupCanvas();renderAll()">
+        </div>
+        <div class="tpl-grid">
+          ${TEMPLATES.map((t,i) => `
+            <div class="tpl-card ${canvasW===t.w&&canvasH===t.h?'active':''}" onclick="selectTemplate(${i})" style="--ar:${t.ar}">
+              <div class="tpl-preview">${t.custom?'✎':'⊡'}</div>
+              <div class="tpl-name">${t.name}</div>
+              <div class="tpl-size">${t.w}×${t.h}</div>
+            </div>
+          `).join('')}
         </div>
       </div>`;
   }
 }
 
+function selectLayer(id) {
+  selectedId = id;
+  renderAll();
+}
+
 // ═══════════════════════════════════════════════════
 //  ADD ELEMENTS
 // ═══════════════════════════════════════════════════
-function addHeading() { saveState(); elements.push(makeText('TÍTULO AQUÍ', { fontSize: 72, fontWeight: '900' })); selectedId = elements[elements.length-1].id; renderAll(); }
-function addSubheading() { saveState(); elements.push(makeText('Subtítulo aquí', { fontSize: 36, fontWeight: '600', color: '#c8a84b' })); selectedId = elements[elements.length-1].id; renderAll(); }
-function addBody() { saveState(); elements.push(makeText('Texto descriptivo para tu publicación.', { fontSize: 20, fontWeight: '400', fontFamily: 'Barlow', color: '#8a9faf', w: 400 })); selectedId = elements[elements.length-1].id; renderAll(); }
-function addBrandName() { saveState(); elements.push(makeText('MICSA', { fontSize: 36, fontFamily: 'Black Ops One', fontWeight: '400', letterSpacing: 4, color: '#f0f4f8' })); selectedId = elements[elements.length-1].id; renderAll(); }
-function addRect() { saveState(); elements.push(makeRect()); selectedId = elements[elements.length-1].id; renderAll(); }
-function addLine() { saveState(); elements.push(makeLine()); selectedId = elements[elements.length-1].id; renderAll(); }
-function addAccentBar() { saveState(); elements.push(makeRect({ x: 40, y: canvasH/2 - 60, w: 5, h: 120, color: '#c8a84b' })); selectedId = elements[elements.length-1].id; renderAll(); }
-function addOverlay() { saveState(); elements.push(makeRect({ x: 0, y: 0, w: canvasW, h: canvasH, color: '#000000', opacity: 0.5, radius: 0 })); selectedId = elements[elements.length-1].id; renderAll(); }
-function addTag() {
+function addHeading(){saveState();elements.push(makeText('TÍTULO AQUÍ',{fontSize:72,fontWeight:'900'}));selectedId=elements[elements.length-1].id;renderAll();}
+function addSubheading(){saveState();elements.push(makeText('Subtítulo aquí',{fontSize:36,fontWeight:'600',color:'#c8a84b'}));selectedId=elements[elements.length-1].id;renderAll();}
+function addBody(){saveState();elements.push(makeText('Texto descriptivo para tu publicación.',{fontSize:20,fontWeight:'400',fontFamily:'Barlow',color:'#8a9faf',w:400}));selectedId=elements[elements.length-1].id;renderAll();}
+function addBrandName(){saveState();elements.push(makeText('MICSA',{fontSize:36,fontFamily:'Black Ops One',fontWeight:'400',letterSpacing:4,color:'#f0f4f8'}));selectedId=elements[elements.length-1].id;renderAll();}
+function addRect(){saveState();elements.push(makeRect());selectedId=elements[elements.length-1].id;renderAll();}
+function addLine(){saveState();elements.push(makeLine());selectedId=elements[elements.length-1].id;renderAll();}
+function addAccentBar(){saveState();elements.push(makeRect({x:40,y:canvasH/2-60,w:5,h:120,color:'#c8a84b'}));selectedId=elements[elements.length-1].id;renderAll();}
+function addOverlay(){saveState();elements.push(makeRect({x:0,y:0,w:canvasW,h:canvasH,color:'#000000',opacity:0.5}));selectedId=elements[elements.length-1].id;renderAll();}
+function addTag(){
   saveState();
-  elements.push(makeRect({ w: 120, h: 30, color: '#c8a84b', opacity: 0.15, radius: 4, borderColor: '#c8a84b', borderWidth: 1 }));
-  const r = elements[elements.length-1];
-  elements.push(makeText('ETIQUETA', { x: r.x + 10, y: r.y + 2, w: 100, h: 26, fontSize: 12, fontWeight: '700', color: '#c8a84b', letterSpacing: 2 }));
-  selectedId = elements[elements.length-1].id; renderAll();
+  elements.push(makeRect({w:120,h:30,color:'#c8a84b',opacity:0.15,radius:4,borderColor:'#c8a84b',borderWidth:1}));
+  const r=elements[elements.length-1];
+  elements.push(makeText('ETIQUETA',{x:r.x+10,y:r.y+2,w:100,h:26,fontSize:12,fontWeight:'700',color:'#c8a84b',letterSpacing:2}));
+  selectedId=elements[elements.length-1].id;renderAll();
 }
-function addStatBox() {
-  saveState();
-  const bx = canvasW/2 - 80, by = canvasH/2 - 40;
-  elements.push(makeRect({ x: bx, y: by, w: 160, h: 80, color: '#06060a', opacity: 0.9, radius: 4 }));
-  elements.push(makeRect({ x: bx, y: by, w: 4, h: 80, color: '#c8a84b' }));
-  elements.push(makeText('100T', { x: bx + 14, y: by + 5, w: 130, h: 44, fontSize: 42, fontWeight: '900', color: '#c8a84b', align: 'left' }));
-  elements.push(makeText('CAPACIDAD', { x: bx + 14, y: by + 50, w: 130, h: 20, fontSize: 10, fontWeight: '600', color: 'rgba(255,255,255,0.5)', align: 'left', letterSpacing: 2 }));
-  selectedId = elements[elements.length-1].id; renderAll();
+function addStatBox(){
+  saveState();const bx=canvasW/2-80,by=canvasH/2-40;
+  elements.push(makeRect({x:bx,y:by,w:160,h:80,color:'#06060a',opacity:0.9,radius:4}));
+  elements.push(makeRect({x:bx,y:by,w:4,h:80,color:'#c8a84b'}));
+  elements.push(makeText('100T',{x:bx+14,y:by+5,w:130,h:44,fontSize:42,fontWeight:'900',color:'#c8a84b',align:'left'}));
+  elements.push(makeText('CAPACIDAD',{x:bx+14,y:by+50,w:130,h:20,fontSize:10,fontWeight:'600',color:'rgba(255,255,255,0.5)',align:'left',letterSpacing:2}));
+  selectedId=elements[elements.length-1].id;renderAll();
 }
 
 // ═══════════════════════════════════════════════════
@@ -439,13 +493,9 @@ function handlePhotoUpload(input) {
     img.onload = () => {
       const id = 'ph_' + nextId++;
       uploadedPhotos.push({ id, img, name: file.name, url });
-      renderSidebar('photos');
-      // Auto-place into first placeholder if one exists
+      renderDrawer('photos');
       const firstPh = elements.find(e => e.type === 'placeholder');
-      if (firstPh) {
-        saveState();
-        replacePlaceholder(firstPh, { img, url });
-      }
+      if (firstPh) { saveState(); replacePlaceholder(firstPh, { img, url }); }
     };
     img.src = url;
   });
@@ -454,31 +504,18 @@ function addPhotoToCanvas(photoId) {
   const ph = uploadedPhotos.find(p => p.id === photoId);
   if (!ph) return;
   saveState();
-  // 1. If a placeholder is selected, replace it
   const sel = elements.find(e => e.id === selectedId);
-  if (sel && sel.type === 'placeholder') {
-    replacePlaceholder(sel, ph);
-    return;
-  }
-  // 2. If any placeholder exists, replace the first one automatically
+  if (sel && sel.type === 'placeholder') { replacePlaceholder(sel, ph); return; }
   const firstPh = elements.find(e => e.type === 'placeholder');
-  if (firstPh) {
-    replacePlaceholder(firstPh, ph);
-    return;
-  }
-  // 3. No placeholders — add as full-canvas background image behind everything else
-  const imgEl = makeImage(ph.img, ph.url, { x: 0, y: 0, w: canvasW, h: canvasH });
-  // Insert at position 1 (after background rect if exists)
-  const bgIdx = elements[0] && elements[0].type === 'rect' && elements[0].w >= canvasW * 0.9 ? 1 : 0;
+  if (firstPh) { replacePlaceholder(firstPh, ph); return; }
+  const imgEl = makeImage(ph.img, ph.url, { x:0, y:0, w:canvasW, h:canvasH });
+  const bgIdx = elements[0] && elements[0].type==='rect' && elements[0].w>=canvasW*0.9 ? 1 : 0;
   elements.splice(bgIdx, 0, imgEl);
   selectedId = imgEl.id;
   renderAll();
 }
 function replacePlaceholder(placeholder, photo) {
-  const imgEl = makeImage(photo.img, photo.url, {
-    x: placeholder.x, y: placeholder.y,
-    w: placeholder.w, h: placeholder.h
-  });
+  const imgEl = makeImage(photo.img, photo.url, { x:placeholder.x, y:placeholder.y, w:placeholder.w, h:placeholder.h });
   const idx = elements.findIndex(e => e.id === placeholder.id);
   elements.splice(idx, 1, imgEl);
   selectedId = imgEl.id;
@@ -486,7 +523,7 @@ function replacePlaceholder(placeholder, photo) {
 }
 function removePhoto(photoId) {
   uploadedPhotos = uploadedPhotos.filter(p => p.id !== photoId);
-  renderSidebar('photos');
+  renderDrawer('photos');
 }
 
 // ═══════════════════════════════════════════════════
@@ -498,583 +535,317 @@ function selectTemplate(idx) {
     const w = prompt('Ancho (px):', canvasW);
     const h = prompt('Alto (px):', canvasH);
     if (w && h) { canvasW = parseInt(w); canvasH = parseInt(h); }
-  } else {
-    canvasW = t.w; canvasH = t.h;
-  }
-  setupCanvas();
-  renderAll();
-  renderSidebar('templates');
+  } else { canvasW = t.w; canvasH = t.h; }
+  setupCanvas(); renderAll(); renderDrawer('format');
 }
 
 // ═══════════════════════════════════════════════════
 //  QUICK DESIGNS
 // ═══════════════════════════════════════════════════
 function applyQuickDesign(type) {
-  saveState();
-  elements = [];
-  selectedId = null;
-  const W = canvasW, H = canvasH;
-  const bg = (c) => makeRect({ x:0, y:0, w:W, h:H, color: c || '#06060a' });
-  const overlay = (x,y,w,h,op) => makeRect({ x, y, w, h, color:'#000000', opacity: op || 0.6 });
-  const gold = '#c8a84b', white = '#f0f4f8', gray = '#55667a', dark = '#06060a';
-  const brand = () => {
-    elements.push(makeText('MICSA', { x:W*0.05, y:H-80, w:200, h:36, fontSize:26, fontFamily:'Black Ops One', fontWeight:'400', color:white, align:'left', letterSpacing:4 }));
-    elements.push(makeText('MONTAJES E IZAJES DEL CENTRO INDUSTRIAL', { x:W*0.05, y:H-48, w:500, h:20, fontSize:9, fontWeight:'600', fontFamily:'Barlow Condensed', color:'#3a4a5a', align:'left', letterSpacing:2 }));
+  saveState(); elements = []; selectedId = null;
+  const W=canvasW, H=canvasH, gold='#c8a84b', white='#f0f4f8', gray='#55667a', dark='#06060a';
+  const bg=(c)=>makeRect({x:0,y:0,w:W,h:H,color:c||dark});
+  const ov=(x,y,w,h,op)=>makeRect({x,y,w,h,color:'#000000',opacity:op||0.6});
+  const brand=()=>{
+    elements.push(makeText('MICSA',{x:W*0.05,y:H-80,w:200,h:36,fontSize:26,fontFamily:'Black Ops One',fontWeight:'400',color:white,align:'left',letterSpacing:4}));
+    elements.push(makeText('MONTAJES E IZAJES DEL CENTRO INDUSTRIAL',{x:W*0.05,y:H-48,w:500,h:20,fontSize:9,fontWeight:'600',fontFamily:'Barlow Condensed',color:'#3a4a5a',align:'left',letterSpacing:2}));
   };
-
-  if (type === 'izaje') {
-    // Foto izquierda, info derecha
+  if(type==='izaje'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W*0.55, h:H, label:'FOTO DE IZAJE' }));
-    elements.push(makeRect({ x:W*0.48, y:0, w:W*0.52, h:H, color:dark, opacity:0.92 }));
-    elements.push(makeRect({ x:W*0.55-3, y:H*0.15, w:3, h:H*0.5, color:gold }));
-    elements.push(makeText('IZAJE', { x:W*0.58, y:H*0.15, w:W*0.38, h:80, fontSize:72, fontWeight:'900', color:white, align:'left' }));
-    elements.push(makeText('INDUSTRIAL', { x:W*0.58, y:H*0.15+72, w:W*0.38, h:50, fontSize:48, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('Maniobra especializada con grúas\nde alta capacidad y personal certificado.', { x:W*0.58, y:H*0.52, w:W*0.36, h:50, fontSize:15, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
-    // Stats
-    elements.push(makeRect({ x:W*0.58, y:H*0.68, w:100, h:60, color:dark, opacity:0.9, radius:4, borderColor:gold, borderWidth:1 }));
-    elements.push(makeText('100T', { x:W*0.58+8, y:H*0.68+5, w:84, h:34, fontSize:32, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('CAPACIDAD', { x:W*0.58+8, y:H*0.68+40, w:84, h:14, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
-    elements.push(makeRect({ x:W*0.58+112, y:H*0.68, w:100, h:60, color:dark, opacity:0.9, radius:4, borderColor:gold, borderWidth:1 }));
-    elements.push(makeText('0', { x:W*0.58+120, y:H*0.68+5, w:84, h:34, fontSize:32, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('INCIDENTES', { x:W*0.58+120, y:H*0.68+40, w:84, h:14, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
+    elements.push(makePlaceholder({x:0,y:0,w:W*0.55,h:H,label:'FOTO DE IZAJE'}));
+    elements.push(makeRect({x:W*0.48,y:0,w:W*0.52,h:H,color:dark,opacity:0.92}));
+    elements.push(makeRect({x:W*0.55-3,y:H*0.15,w:3,h:H*0.5,color:gold}));
+    elements.push(makeText('IZAJE',{x:W*0.58,y:H*0.15,w:W*0.38,h:80,fontSize:72,fontWeight:'900',color:white,align:'left'}));
+    elements.push(makeText('INDUSTRIAL',{x:W*0.58,y:H*0.15+72,w:W*0.38,h:50,fontSize:48,fontWeight:'900',color:gold,align:'left'}));
+    elements.push(makeText('Maniobra especializada con grúas\nde alta capacidad y personal certificado.',{x:W*0.58,y:H*0.52,w:W*0.36,h:50,fontSize:15,fontWeight:'400',fontFamily:'Barlow',color:gray,align:'left',lineHeight:1.6}));
+    elements.push(makeRect({x:W*0.58,y:H*0.68,w:100,h:60,color:dark,opacity:0.9,radius:4,borderColor:gold,borderWidth:1}));
+    elements.push(makeText('100T',{x:W*0.58+8,y:H*0.68+5,w:84,h:34,fontSize:32,fontWeight:'900',color:gold,align:'left'}));
+    elements.push(makeText('CAPACIDAD',{x:W*0.58+8,y:H*0.68+40,w:84,h:14,fontSize:8,fontWeight:'700',color:'rgba(255,255,255,0.4)',align:'left',letterSpacing:2}));
     brand();
-
-  } else if (type === 'montaje') {
-    // Foto fondo completo + overlay + texto
+  } else if(type==='montaje'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE MONTAJE' }));
-    elements.push(overlay(0,0,W,H,0.65));
-    elements.push(makeRect({ x:0, y:H*0.6, w:W, h:H*0.4, color:dark, opacity:0.9 }));
-    elements.push(makeRect({ x:W*0.05, y:H*0.35, w:5, h:H*0.2, color:gold }));
-    elements.push(makeText('MONTAJE', { x:W*0.08, y:H*0.32, w:W*0.5, h:80, fontSize:68, fontWeight:'900', color:white, align:'left' }));
-    elements.push(makeText('INDUSTRIAL', { x:W*0.08, y:H*0.32+68, w:W*0.5, h:50, fontSize:42, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('Instalación de maquinaria y equipo pesado\ncon precisión milimétrica y seguridad total.', { x:W*0.05, y:H*0.66, w:W*0.55, h:50, fontSize:15, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', align:'left', lineHeight:1.6 }));
-    // Tags
-    elements.push(makeRect({ x:W*0.05, y:H*0.8, w:90, h:24, color:gold, opacity:0.12, radius:3, borderColor:gold, borderWidth:1 }));
-    elements.push(makeText('MONTAJE', { x:W*0.05+10, y:H*0.8+4, w:70, h:16, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:2 }));
-    elements.push(makeRect({ x:W*0.05+100, y:H*0.8, w:110, h:24, color:gold, opacity:0.12, radius:3, borderColor:gold, borderWidth:1 }));
-    elements.push(makeText('ALINEACIÓN', { x:W*0.05+110, y:H*0.8+4, w:90, h:16, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:2 }));
-    elements.push(makeRect({ x:W*0.05+220, y:H*0.8, w:110, h:24, color:gold, opacity:0.12, radius:3, borderColor:gold, borderWidth:1 }));
-    elements.push(makeText('NIVELACIÓN', { x:W*0.05+230, y:H*0.8+4, w:90, h:16, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:2 }));
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H,label:'FOTO DE MONTAJE'}));
+    elements.push(ov(0,0,W,H,0.65));
+    elements.push(makeRect({x:0,y:H*0.6,w:W,h:H*0.4,color:dark,opacity:0.9}));
+    elements.push(makeRect({x:W*0.05,y:H*0.35,w:5,h:H*0.2,color:gold}));
+    elements.push(makeText('MONTAJE',{x:W*0.08,y:H*0.32,w:W*0.5,h:80,fontSize:68,fontWeight:'900',color:white,align:'left'}));
+    elements.push(makeText('INDUSTRIAL',{x:W*0.08,y:H*0.32+68,w:W*0.5,h:50,fontSize:42,fontWeight:'900',color:gold,align:'left'}));
+    elements.push(makeText('Instalación de maquinaria y equipo pesado\ncon precisión milimétrica y seguridad total.',{x:W*0.05,y:H*0.66,w:W*0.55,h:50,fontSize:15,fontWeight:'400',fontFamily:'Barlow',color:'#8a9faf',align:'left',lineHeight:1.6}));
     brand();
-
-  } else if (type === 'lowboy') {
-    // Split horizontal: foto arriba, info abajo
+  } else if(type==='lowboy'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H*0.55, label:'FOTO DE TRANSPORTE' }));
-    elements.push(makeRect({ x:0, y:H*0.5, w:W, h:H*0.5, color:dark }));
-    elements.push(makeRect({ x:0, y:H*0.5, w:W, h:4, color:gold }));
-    elements.push(makeText('TRANSPORTE', { x:W*0.05, y:H*0.55, w:W*0.5, h:70, fontSize:56, fontWeight:'900', color:white, align:'left' }));
-    elements.push(makeText('ESPECIALIZADO', { x:W*0.05, y:H*0.55+54, w:W*0.5, h:40, fontSize:36, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('Lowboy · Cama baja · Plataformas\nTraslado de maquinaria sobredimensionada', { x:W*0.05, y:H*0.79, w:W*0.5, h:40, fontSize:14, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
-    // Right stats
-    elements.push(makeRect({ x:W*0.6, y:H*0.58, w:W*0.34, h:100, color:'#0a0a14', opacity:0.8, radius:6, borderColor:'#1a2a3a', borderWidth:1 }));
-    elements.push(makeRect({ x:W*0.6, y:H*0.58, w:4, h:100, color:gold }));
-    elements.push(makeText('COBERTURA', { x:W*0.62, y:H*0.58+8, w:200, h:14, fontSize:9, fontWeight:'700', color:gold, align:'left', letterSpacing:3 }));
-    elements.push(makeText('Nacional', { x:W*0.62, y:H*0.58+24, w:200, h:30, fontSize:28, fontWeight:'900', color:white, align:'left' }));
-    elements.push(makeText('Permisos SCT · Escolta · GPS', { x:W*0.62, y:H*0.58+60, w:200, h:16, fontSize:11, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left' }));
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H*0.55,label:'FOTO DE TRANSPORTE'}));
+    elements.push(makeRect({x:0,y:H*0.5,w:W,h:H*0.5,color:dark}));
+    elements.push(makeRect({x:0,y:H*0.5,w:W,h:4,color:gold}));
+    elements.push(makeText('TRANSPORTE',{x:W*0.05,y:H*0.55,w:W*0.5,h:70,fontSize:56,fontWeight:'900',color:white,align:'left'}));
+    elements.push(makeText('ESPECIALIZADO',{x:W*0.05,y:H*0.55+54,w:W*0.5,h:40,fontSize:36,fontWeight:'900',color:gold,align:'left'}));
+    elements.push(makeText('Lowboy · Cama baja · Plataformas\nTraslado de maquinaria sobredimensionada',{x:W*0.05,y:H*0.79,w:W*0.5,h:40,fontSize:14,fontWeight:'400',fontFamily:'Barlow',color:gray,align:'left',lineHeight:1.6}));
     brand();
-
-  } else if (type === 'proyecto') {
-    // 2 fotos + info panel
+  } else if(type==='proyecto'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W*0.48, h:H*0.65, label:'FOTO PRINCIPAL' }));
-    elements.push(makePlaceholder({ x:0, y:H*0.67, w:W*0.48, h:H*0.33, label:'FOTO DETALLE' }));
-    elements.push(makeRect({ x:W*0.48, y:0, w:W*0.52, h:H, color:dark }));
-    elements.push(makeRect({ x:W*0.48, y:0, w:3, h:H, color:gold, opacity:0.4 }));
-    elements.push(makeText('PROYECTO COMPLETADO', { x:W*0.52, y:H*0.08, w:W*0.44, h:16, fontSize:10, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
-    elements.push(makeText('NOMBRE\nDEL PROYECTO', { x:W*0.52, y:H*0.14, w:W*0.44, h:120, fontSize:52, fontWeight:'900', color:white, align:'left', lineHeight:1.05 }));
-    elements.push(makeLine({ x:W*0.52, y:H*0.45, w:W*0.2, h:2, color:gold, opacity:0.3 }));
-    elements.push(makeText('Descripción breve del proyecto,\nubicación y alcance del trabajo.', { x:W*0.52, y:H*0.5, w:W*0.42, h:50, fontSize:15, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
-    // Stats row
-    elements.push(makeRect({ x:W*0.52, y:H*0.65, w:90, h:55, color:'#0a0a14', radius:4 }));
-    elements.push(makeRect({ x:W*0.52, y:H*0.65, w:3, h:55, color:gold }));
-    elements.push(makeText('20T', { x:W*0.52+12, y:H*0.65+4, w:70, h:28, fontSize:26, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('PESO', { x:W*0.52+12, y:H*0.65+34, w:70, h:12, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
-    elements.push(makeRect({ x:W*0.52+100, y:H*0.65, w:90, h:55, color:'#0a0a14', radius:4 }));
-    elements.push(makeRect({ x:W*0.52+100, y:H*0.65, w:3, h:55, color:gold }));
-    elements.push(makeText('3', { x:W*0.52+112, y:H*0.65+4, w:70, h:28, fontSize:26, fontWeight:'900', color:gold, align:'left' }));
-    elements.push(makeText('DÍAS', { x:W*0.52+112, y:H*0.65+34, w:70, h:12, fontSize:8, fontWeight:'700', color:'rgba(255,255,255,0.4)', align:'left', letterSpacing:2 }));
+    elements.push(makePlaceholder({x:0,y:0,w:W*0.48,h:H*0.65,label:'FOTO PRINCIPAL'}));
+    elements.push(makePlaceholder({x:0,y:H*0.67,w:W*0.48,h:H*0.33,label:'FOTO DETALLE'}));
+    elements.push(makeRect({x:W*0.48,y:0,w:W*0.52,h:H,color:dark}));
+    elements.push(makeRect({x:W*0.48,y:0,w:3,h:H,color:gold,opacity:0.4}));
+    elements.push(makeText('PROYECTO COMPLETADO',{x:W*0.52,y:H*0.08,w:W*0.44,h:16,fontSize:10,fontWeight:'700',color:gold,align:'left',letterSpacing:4}));
+    elements.push(makeText('NOMBRE\nDEL PROYECTO',{x:W*0.52,y:H*0.14,w:W*0.44,h:120,fontSize:52,fontWeight:'900',color:white,align:'left',lineHeight:1.05}));
+    elements.push(makeText('Descripción breve del proyecto.',{x:W*0.52,y:H*0.5,w:W*0.42,h:50,fontSize:15,fontWeight:'400',fontFamily:'Barlow',color:gray,align:'left',lineHeight:1.6}));
     brand();
-
-  } else if (type === 'dato') {
-    // Big number + foto fondo
+  } else if(type==='dato'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE FONDO (OPCIONAL)' }));
-    elements.push(overlay(0,0,W,H,0.8));
-    elements.push(makeText('100', { x:0, y:H*0.08, w:W, h:250, fontSize:220, fontWeight:'900', color:gold }));
-    elements.push(makeText('TONELADAS', { x:0, y:H*0.08+210, w:W, h:80, fontSize:72, fontWeight:'900', color:white }));
-    elements.push(makeText('IZADAS CON ÉXITO', { x:0, y:H*0.08+290, w:W, h:40, fontSize:24, fontWeight:'900', color:white, opacity:0.12 }));
-    elements.push(makeLine({ x:W*0.35, y:H*0.72, w:W*0.3, h:2, color:gold, opacity:0.3 }));
-    elements.push(makeText('Cero incidentes. Cero retrasos.\nSeguridad y precisión en cada maniobra.', { x:W*0.1, y:H*0.76, w:W*0.8, h:50, fontSize:16, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', lineHeight:1.6 }));
-    elements.push(makeText('MICSA', { x:0, y:H-70, w:W, h:30, fontSize:22, fontFamily:'Black Ops One', fontWeight:'400', color:white, letterSpacing:4 }));
-
-  } else if (type === 'antesdespues') {
-    // Split 50/50 con fotos
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H,label:'FOTO DE FONDO (OPCIONAL)'}));
+    elements.push(ov(0,0,W,H,0.8));
+    elements.push(makeText('100',{x:0,y:H*0.08,w:W,h:250,fontSize:220,fontWeight:'900',color:gold}));
+    elements.push(makeText('TONELADAS',{x:0,y:H*0.08+210,w:W,h:80,fontSize:72,fontWeight:'900',color:white}));
+    elements.push(makeText('IZADAS CON ÉXITO',{x:0,y:H*0.08+290,w:W,h:40,fontSize:24,fontWeight:'900',color:white,opacity:0.12}));
+    elements.push(makeText('MICSA',{x:0,y:H-70,w:W,h:30,fontSize:22,fontFamily:'Black Ops One',fontWeight:'400',color:white,letterSpacing:4}));
+  } else if(type==='antesdespues'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W*0.5-2, h:H, label:'ANTES' }));
-    elements.push(makePlaceholder({ x:W*0.5+2, y:0, w:W*0.5-2, h:H, label:'DESPUÉS' }));
-    elements.push(makeRect({ x:W*0.5-2, y:0, w:4, h:H, color:gold }));
-    // Labels top
-    elements.push(makeRect({ x:0, y:0, w:W, h:60, color:dark, opacity:0.85 }));
-    elements.push(makeText('ANTES', { x:0, y:12, w:W*0.5, h:30, fontSize:22, fontWeight:'900', color:'#666', letterSpacing:4 }));
-    elements.push(makeText('DESPUÉS', { x:W*0.5, y:12, w:W*0.5, h:30, fontSize:22, fontWeight:'900', color:gold, letterSpacing:4 }));
-    // Bottom bar
-    elements.push(makeRect({ x:0, y:H-70, w:W, h:70, color:dark, opacity:0.9 }));
-    elements.push(makeText('MICSA', { x:W*0.05, y:H-55, w:200, h:30, fontSize:20, fontFamily:'Black Ops One', fontWeight:'400', color:white, align:'left', letterSpacing:4 }));
-    elements.push(makeText('NOMBRE DEL PROYECTO', { x:W*0.05, y:H-28, w:300, h:14, fontSize:10, fontWeight:'600', fontFamily:'Barlow Condensed', color:gray, align:'left', letterSpacing:2 }));
-
-  } else if (type === 'servicio') {
-    // Lista de servicios con iconos
+    elements.push(makePlaceholder({x:0,y:0,w:W*0.5-2,h:H,label:'ANTES'}));
+    elements.push(makePlaceholder({x:W*0.5+2,y:0,w:W*0.5-2,h:H,label:'DESPUÉS'}));
+    elements.push(makeRect({x:W*0.5-2,y:0,w:4,h:H,color:gold}));
+    elements.push(makeRect({x:0,y:0,w:W,h:60,color:dark,opacity:0.85}));
+    elements.push(makeText('ANTES',{x:0,y:12,w:W*0.5,h:30,fontSize:22,fontWeight:'900',color:'#666',letterSpacing:4}));
+    elements.push(makeText('DESPUÉS',{x:W*0.5,y:12,w:W*0.5,h:30,fontSize:22,fontWeight:'900',color:gold,letterSpacing:4}));
+    elements.push(makeRect({x:0,y:H-70,w:W,h:70,color:dark,opacity:0.9}));
+    elements.push(makeText('MICSA',{x:W*0.05,y:H-55,w:200,h:30,fontSize:20,fontFamily:'Black Ops One',fontWeight:'400',color:white,align:'left',letterSpacing:4}));
+  } else if(type==='servicio'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W*0.45, h:H, label:'FOTO DE SERVICIO' }));
-    elements.push(makeRect({ x:W*0.42, y:0, w:W*0.58, h:H, color:dark, opacity:0.95 }));
-    elements.push(makeRect({ x:W*0.45-3, y:0, w:3, h:H, color:gold, opacity:0.5 }));
-    elements.push(makeText('NUESTROS', { x:W*0.48, y:H*0.06, w:W*0.48, h:20, fontSize:12, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
-    elements.push(makeText('SERVICIOS', { x:W*0.48, y:H*0.06+22, w:W*0.48, h:60, fontSize:52, fontWeight:'900', color:white, align:'left' }));
-    // Service items
-    const svc = [['Izajes con grúa','Hasta 100 toneladas'],['Montajes industriales','Maquinaria y equipo pesado'],['Transporte especializado','Lowboy y cama baja'],['Maniobras especiales','Espacios confinados']];
-    svc.forEach((s,i) => {
-      const sy = H*0.28 + i*((H*0.5)/4);
-      elements.push(makeRect({ x:W*0.48, y:sy, w:4, h:40, color:gold, opacity:0.6 }));
-      elements.push(makeText(s[0], { x:W*0.48+16, y:sy-2, w:W*0.44, h:20, fontSize:18, fontWeight:'700', color:white, align:'left' }));
-      elements.push(makeText(s[1], { x:W*0.48+16, y:sy+20, w:W*0.44, h:16, fontSize:12, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left' }));
+    elements.push(makePlaceholder({x:0,y:0,w:W*0.45,h:H,label:'FOTO DE SERVICIO'}));
+    elements.push(makeRect({x:W*0.42,y:0,w:W*0.58,h:H,color:dark,opacity:0.95}));
+    elements.push(makeText('NUESTROS',{x:W*0.48,y:H*0.06,w:W*0.48,h:20,fontSize:12,fontWeight:'700',color:gold,align:'left',letterSpacing:4}));
+    elements.push(makeText('SERVICIOS',{x:W*0.48,y:H*0.06+22,w:W*0.48,h:60,fontSize:52,fontWeight:'900',color:white,align:'left'}));
+    const svc=[['Izajes con grúa','Hasta 100 toneladas'],['Montajes industriales','Maquinaria pesada'],['Transporte especializado','Lowboy y cama baja'],['Maniobras especiales','Espacios confinados']];
+    svc.forEach((s,i)=>{const sy=H*0.28+i*((H*0.5)/4);
+      elements.push(makeRect({x:W*0.48,y:sy,w:4,h:40,color:gold,opacity:0.6}));
+      elements.push(makeText(s[0],{x:W*0.48+16,y:sy-2,w:W*0.44,h:20,fontSize:18,fontWeight:'700',color:white,align:'left'}));
+      elements.push(makeText(s[1],{x:W*0.48+16,y:sy+20,w:W*0.44,h:16,fontSize:12,fontWeight:'400',fontFamily:'Barlow',color:gray,align:'left'}));
     });
     brand();
-
-  } else if (type === 'seguridad') {
+  } else if(type==='seguridad'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE EQUIPO DE SEGURIDAD' }));
-    elements.push(overlay(0,0,W,H,0.7));
-    elements.push(makeRect({ x:0, y:0, w:W, h:6, color:'#3fb950' }));
-    elements.push(makeText('SEGURIDAD', { x:0, y:H*0.2, w:W, h:100, fontSize:80, fontWeight:'900', color:white }));
-    elements.push(makeText('ES PRIMERO', { x:0, y:H*0.2+80, w:W, h:60, fontSize:48, fontWeight:'900', color:'#3fb950' }));
-    elements.push(makeLine({ x:W*0.35, y:H*0.55, w:W*0.3, h:2, color:'#3fb950', opacity:0.3 }));
-    elements.push(makeText('✓  Personal certificado DC-3\n✓  Equipo de protección completo\n✓  Plan de maniobra documentado\n✓  Cero tolerancia a incidentes', { x:W*0.2, y:H*0.6, w:W*0.6, h:120, fontSize:16, fontWeight:'500', fontFamily:'Barlow', color:'#b0d0b0', align:'left', lineHeight:1.8 }));
-    elements.push(makeText('MICSA', { x:0, y:H-70, w:W, h:30, fontSize:22, fontFamily:'Black Ops One', fontWeight:'400', color:white, letterSpacing:4 }));
-    elements.push(makeText('REPSE NO. 282364', { x:0, y:H-38, w:W, h:16, fontSize:9, fontWeight:'600', fontFamily:'Barlow Condensed', color:'#3a5a3a', letterSpacing:2 }));
-
-  } else if (type === 'contacto') {
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H,label:'FOTO SEGURIDAD'}));
+    elements.push(ov(0,0,W,H,0.7));
+    elements.push(makeRect({x:0,y:0,w:W,h:6,color:'#3fb950'}));
+    elements.push(makeText('SEGURIDAD',{x:0,y:H*0.2,w:W,h:100,fontSize:80,fontWeight:'900',color:white}));
+    elements.push(makeText('ES PRIMERO',{x:0,y:H*0.2+80,w:W,h:60,fontSize:48,fontWeight:'900',color:'#3fb950'}));
+    elements.push(makeText('✓  Personal certificado DC-3\n✓  Equipo de protección completo\n✓  Plan de maniobra documentado\n✓  Cero tolerancia a incidentes',{x:W*0.2,y:H*0.6,w:W*0.6,h:120,fontSize:16,fontWeight:'500',fontFamily:'Barlow',color:'#b0d0b0',align:'left',lineHeight:1.8}));
+    elements.push(makeText('MICSA',{x:0,y:H-70,w:W,h:30,fontSize:22,fontFamily:'Black Ops One',fontWeight:'400',color:white,letterSpacing:4}));
+  } else if(type==='contacto'){
     elements.push(bg());
-    elements.push(makeRect({ x:0, y:0, w:W*0.42, h:H, color:gold, opacity:0.06 }));
-    elements.push(makeRect({ x:W*0.42-3, y:0, w:3, h:H, color:gold, opacity:0.4 }));
-    elements.push(makePlaceholder({ x:W*0.42, y:0, w:W*0.58, h:H, label:'FOTO DE EQUIPO O MAQUINARIA' }));
-    elements.push(makeRect({ x:W*0.42, y:0, w:W*0.58, h:H, color:dark, opacity:0.4 }));
-    elements.push(makeText('MICSA', { x:W*0.06, y:H*0.15, w:W*0.3, h:50, fontSize:38, fontFamily:'Black Ops One', fontWeight:'400', color:white, align:'left', letterSpacing:4 }));
-    elements.push(makeText('MONTAJES E IZAJES\nDEL CENTRO INDUSTRIAL', { x:W*0.06, y:H*0.15+52, w:W*0.3, h:40, fontSize:10, fontWeight:'600', fontFamily:'Barlow Condensed', color:gray, align:'left', letterSpacing:2 }));
-    elements.push(makeLine({ x:W*0.06, y:H*0.4, w:W*0.15, h:2, color:gold, opacity:0.3 }));
-    elements.push(makeText('CONTACTO', { x:W*0.06, y:H*0.45, w:W*0.3, h:16, fontSize:10, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
-    elements.push(makeText('Tel: (866) 633-1234\ncontacto@micsa.com.mx\nCiudad Frontera, Coahuila\n\nRFC: MIC2301268S5\nREPSE: 282364', { x:W*0.06, y:H*0.5, w:W*0.3, h:180, fontSize:16, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', align:'left', lineHeight:1.8 }));
-
-  } else if (type === 'cotizacion') {
+    elements.push(makeRect({x:0,y:0,w:W*0.42,h:H,color:gold,opacity:0.06}));
+    elements.push(makePlaceholder({x:W*0.42,y:0,w:W*0.58,h:H,label:'FOTO EQUIPO'}));
+    elements.push(makeRect({x:W*0.42,y:0,w:W*0.58,h:H,color:dark,opacity:0.4}));
+    elements.push(makeText('MICSA',{x:W*0.06,y:H*0.15,w:W*0.3,h:50,fontSize:38,fontFamily:'Black Ops One',fontWeight:'400',color:white,align:'left',letterSpacing:4}));
+    elements.push(makeText('MONTAJES E IZAJES\nDEL CENTRO INDUSTRIAL',{x:W*0.06,y:H*0.15+52,w:W*0.3,h:40,fontSize:10,fontWeight:'600',fontFamily:'Barlow Condensed',color:gray,align:'left',letterSpacing:2}));
+    elements.push(makeText('Tel: (866) 633-1234\ncontacto@micsa.com.mx\nCiudad Frontera, Coahuila\nRFC: MIC2301268S5',{x:W*0.06,y:H*0.5,w:W*0.3,h:180,fontSize:16,fontWeight:'400',fontFamily:'Barlow',color:'#8a9faf',align:'left',lineHeight:1.8}));
+  } else if(type==='cotizacion'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DE MANIOBRA' }));
-    elements.push(overlay(0,0,W,H,0.75));
-    elements.push(makeText('¿NECESITAS', { x:0, y:H*0.15, w:W, h:50, fontSize:36, fontWeight:'700', color:gray }));
-    elements.push(makeText('IZAJE O\nMONTAJE?', { x:0, y:H*0.15+45, w:W, h:160, fontSize:72, fontWeight:'900', color:white, lineHeight:1.05 }));
-    elements.push(makeLine({ x:W*0.35, y:H*0.58, w:W*0.3, h:2, color:gold, opacity:0.4 }));
-    elements.push(makeText('COTIZACIÓN SIN COSTO', { x:0, y:H*0.64, w:W, h:30, fontSize:20, fontWeight:'700', color:gold, letterSpacing:4 }));
-    elements.push(makeText('Tel: (866) 633-1234\ncontacto@micsa.com.mx', { x:0, y:H*0.72, w:W, h:50, fontSize:18, fontWeight:'400', fontFamily:'Barlow', color:'#8a9faf', lineHeight:1.8 }));
-    elements.push(makeText('MICSA', { x:0, y:H-70, w:W, h:30, fontSize:22, fontFamily:'Black Ops One', fontWeight:'400', color:white, letterSpacing:4 }));
-
-  } else if (type === 'equipo') {
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H,label:'FOTO MANIOBRA'}));
+    elements.push(ov(0,0,W,H,0.75));
+    elements.push(makeText('¿NECESITAS',{x:0,y:H*0.15,w:W,h:50,fontSize:36,fontWeight:'700',color:gray}));
+    elements.push(makeText('IZAJE O\nMONTAJE?',{x:0,y:H*0.15+45,w:W,h:160,fontSize:72,fontWeight:'900',color:white,lineHeight:1.05}));
+    elements.push(makeText('COTIZACIÓN SIN COSTO',{x:0,y:H*0.64,w:W,h:30,fontSize:20,fontWeight:'700',color:gold,letterSpacing:4}));
+    elements.push(makeText('Tel: (866) 633-1234\ncontacto@micsa.com.mx',{x:0,y:H*0.72,w:W,h:50,fontSize:18,fontWeight:'400',fontFamily:'Barlow',color:'#8a9faf',lineHeight:1.8}));
+    elements.push(makeText('MICSA',{x:0,y:H-70,w:W,h:30,fontSize:22,fontFamily:'Black Ops One',fontWeight:'400',color:white,letterSpacing:4}));
+  } else if(type==='equipo'){
     elements.push(bg());
-    elements.push(makePlaceholder({ x:0, y:0, w:W, h:H, label:'FOTO DEL EQUIPO DE TRABAJO' }));
-    elements.push(makeRect({ x:0, y:H*0.55, w:W, h:H*0.45, color:dark, opacity:0.92 }));
-    elements.push(makeRect({ x:0, y:H*0.55, w:W, h:4, color:gold }));
-    elements.push(makeText('NUESTRO EQUIPO', { x:W*0.05, y:H*0.58, w:W*0.5, h:16, fontSize:10, fontWeight:'700', color:gold, align:'left', letterSpacing:4 }));
-    elements.push(makeText('PROFESIONALES\nCERTIFICADOS', { x:W*0.05, y:H*0.58+22, w:W*0.5, h:100, fontSize:48, fontWeight:'900', color:white, align:'left', lineHeight:1.05 }));
-    elements.push(makeText('Personal capacitado con certificaciones DC-3,\nNOM-006 y más de 10 años de experiencia.', { x:W*0.05, y:H*0.84, w:W*0.55, h:40, fontSize:14, fontWeight:'400', fontFamily:'Barlow', color:gray, align:'left', lineHeight:1.6 }));
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H,label:'FOTO DEL EQUIPO'}));
+    elements.push(makeRect({x:0,y:H*0.55,w:W,h:H*0.45,color:dark,opacity:0.92}));
+    elements.push(makeRect({x:0,y:H*0.55,w:W,h:4,color:gold}));
+    elements.push(makeText('NUESTRO EQUIPO',{x:W*0.05,y:H*0.58,w:W*0.5,h:16,fontSize:10,fontWeight:'700',color:gold,align:'left',letterSpacing:4}));
+    elements.push(makeText('PROFESIONALES\nCERTIFICADOS',{x:W*0.05,y:H*0.58+22,w:W*0.5,h:100,fontSize:48,fontWeight:'900',color:white,align:'left',lineHeight:1.05}));
     brand();
   }
   renderAll();
 }
 
 // ═══════════════════════════════════════════════════
-//  BRAND ACTIONS
+//  BRAND
 // ═══════════════════════════════════════════════════
-let canvasBg = '#06060a';
-function applyBrandColor(c) {
-  const el = elements.find(e => e.id === selectedId);
-  if (!el) return;
-  saveState();
-  el.color = c;
-  renderAll();
-}
-function applyBrandFont(f) {
-  const el = elements.find(e => e.id === selectedId);
-  if (!el || el.type !== 'text') return;
-  saveState();
-  el.fontFamily = f;
-  renderAll();
-}
+function applyBrandColor(c){const el=elements.find(e=>e.id===selectedId);if(!el)return;saveState();el.color=c;renderAll();}
+function applyBrandFont(f){const el=elements.find(e=>e.id===selectedId);if(!el||el.type!=='text')return;saveState();el.fontFamily=f;renderAll();}
 
 // ═══════════════════════════════════════════════════
-//  CANVAS SETUP & ZOOM
+//  CANVAS
 // ═══════════════════════════════════════════════════
 const cv = document.getElementById('main');
 const ctx = cv.getContext('2d');
 const wrap = document.getElementById('canvas-wrap');
 
-function setupCanvas() {
-  cv.width = canvasW;
-  cv.height = canvasH;
-  zoomFit();
-}
-function zoomFit() {
-  const area = document.getElementById('canvas-area');
-  const aw = area.clientWidth - 60, ah = area.clientHeight - 60;
-  zoom = Math.min(aw / canvasW, ah / canvasH, 1);
-  applyZoom();
-}
-function zoomBy(d) {
-  zoom = Math.max(0.1, Math.min(3, zoom + d));
-  applyZoom();
-}
-function applyZoom() {
-  wrap.style.width = (canvasW * zoom) + 'px';
-  wrap.style.height = (canvasH * zoom) + 'px';
-  cv.style.width = (canvasW * zoom) + 'px';
-  cv.style.height = (canvasH * zoom) + 'px';
-  document.getElementById('zoom-val').textContent = Math.round(zoom * 100) + '%';
+function setupCanvas(){cv.width=canvasW;cv.height=canvasH;zoomFit();}
+function zoomFit(){const a=document.getElementById('canvas-area');zoom=Math.min((a.clientWidth-60)/canvasW,(a.clientHeight-60)/canvasH,1);applyZoom();}
+function zoomBy(d){zoom=Math.max(0.1,Math.min(3,zoom+d));applyZoom();}
+function applyZoom(){
+  wrap.style.width=(canvasW*zoom)+'px';wrap.style.height=(canvasH*zoom)+'px';
+  cv.style.width=(canvasW*zoom)+'px';cv.style.height=(canvasH*zoom)+'px';
+  document.getElementById('zoom-val').textContent=Math.round(zoom*100)+'%';
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════
-function renderAll() {
-  ctx.clearRect(0, 0, canvasW, canvasH);
-  // Background
-  ctx.fillStyle = canvasBg;
-  ctx.fillRect(0, 0, canvasW, canvasH);
-  // Elements
-  elements.forEach(el => renderElement(el));
-  // Selection
-  const sel = elements.find(e => e.id === selectedId);
-  if (sel) drawSelection(sel);
-  // Props
+function renderAll(){
+  ctx.clearRect(0,0,canvasW,canvasH);
+  ctx.fillStyle=canvasBg;ctx.fillRect(0,0,canvasW,canvasH);
+  elements.forEach(el=>renderElement(el));
+  const sel=elements.find(e=>e.id===selectedId);
+  if(sel) drawSelection(sel);
   renderProps();
+  if(currentPanel==='layers') renderDrawer('layers');
 }
 
-function renderElement(el) {
-  ctx.save();
-  ctx.globalAlpha = el.opacity ?? 1;
-  if (el.type === 'rect') {
-    ctx.fillStyle = el.color;
-    if (el.radius > 0) {
-      ctx.beginPath(); ctx.roundRect(el.x, el.y, el.w, el.h, el.radius); ctx.fill();
-      if (el.borderColor && el.borderColor !== 'none' && el.borderWidth > 0) {
-        ctx.strokeStyle = el.borderColor; ctx.lineWidth = el.borderWidth; ctx.stroke();
-      }
-    } else {
-      ctx.fillRect(el.x, el.y, el.w, el.h);
-      if (el.borderColor && el.borderColor !== 'none' && el.borderWidth > 0) {
-        ctx.strokeStyle = el.borderColor; ctx.lineWidth = el.borderWidth;
-        ctx.strokeRect(el.x, el.y, el.w, el.h);
-      }
+function renderElement(el){
+  ctx.save();ctx.globalAlpha=el.opacity??1;
+  if(el.type==='rect'){
+    ctx.fillStyle=el.color;
+    if(el.radius>0){ctx.beginPath();ctx.roundRect(el.x,el.y,el.w,el.h,el.radius);ctx.fill();
+      if(el.borderColor&&el.borderColor!=='none'&&el.borderWidth>0){ctx.strokeStyle=el.borderColor;ctx.lineWidth=el.borderWidth;ctx.stroke();}
+    } else {ctx.fillRect(el.x,el.y,el.w,el.h);
+      if(el.borderColor&&el.borderColor!=='none'&&el.borderWidth>0){ctx.strokeStyle=el.borderColor;ctx.lineWidth=el.borderWidth;ctx.strokeRect(el.x,el.y,el.w,el.h);}
     }
-  } else if (el.type === 'line') {
-    ctx.fillStyle = el.color;
-    ctx.fillRect(el.x, el.y, el.w, el.h);
-  } else if (el.type === 'image') {
-    if (el.img) {
-      if (el.radius > 0) {
-        ctx.beginPath(); ctx.roundRect(el.x, el.y, el.w, el.h, el.radius); ctx.clip();
-      }
-      ctx.drawImage(el.img, el.x, el.y, el.w, el.h);
-    }
-  } else if (el.type === 'placeholder') {
-    ctx.fillStyle = '#1a1a2e';
-    ctx.fillRect(el.x, el.y, el.w, el.h);
-    ctx.strokeStyle = '#c8a84b55';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([8, 6]);
-    ctx.strokeRect(el.x + 8, el.y + 8, el.w - 16, el.h - 16);
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#c8a84b88';
-    ctx.font = '600 14px "Barlow Condensed"';
-    ctx.textAlign = 'center';
-    ctx.letterSpacing = '2px';
-    ctx.fillText('📷', el.x + el.w/2, el.y + el.h/2 - 10);
-    ctx.font = '600 11px "Barlow Condensed"';
-    ctx.fillText(el.label || 'SUBE TU FOTO AQUÍ', el.x + el.w/2, el.y + el.h/2 + 12);
-  } else if (el.type === 'text') {
-    ctx.fillStyle = el.color;
-    ctx.font = `${el.fontWeight} ${el.fontSize}px '${el.fontFamily}'`;
-    ctx.textAlign = el.align || 'center';
-    ctx.letterSpacing = (el.letterSpacing || 0) + 'px';
-    const lines = el.text.split('\n');
-    const lh = el.fontSize * (el.lineHeight || 1.2);
-    let tx = el.align === 'left' ? el.x : el.align === 'right' ? el.x + el.w : el.x + el.w / 2;
-    lines.forEach((line, i) => {
-      ctx.fillText(line, tx, el.y + el.fontSize + i * lh);
-    });
+  } else if(el.type==='line'){ctx.fillStyle=el.color;ctx.fillRect(el.x,el.y,el.w,el.h);
+  } else if(el.type==='placeholder'){
+    ctx.fillStyle='#1a1a2e';ctx.fillRect(el.x,el.y,el.w,el.h);
+    ctx.strokeStyle='#c8a84b55';ctx.lineWidth=2;ctx.setLineDash([8,6]);
+    ctx.strokeRect(el.x+8,el.y+8,el.w-16,el.h-16);ctx.setLineDash([]);
+    ctx.fillStyle='#c8a84b88';ctx.font='600 14px "Barlow Condensed"';ctx.textAlign='center';ctx.letterSpacing='2px';
+    ctx.fillText('📷',el.x+el.w/2,el.y+el.h/2-10);
+    ctx.font='600 11px "Barlow Condensed"';
+    ctx.fillText(el.label||'SUBE TU FOTO',el.x+el.w/2,el.y+el.h/2+12);
+  } else if(el.type==='image'){
+    if(el.img){if(el.radius>0){ctx.beginPath();ctx.roundRect(el.x,el.y,el.w,el.h,el.radius);ctx.clip();}
+    ctx.drawImage(el.img,el.x,el.y,el.w,el.h);}
+  } else if(el.type==='text'){
+    ctx.fillStyle=el.color;ctx.font=`${el.fontWeight} ${el.fontSize}px '${el.fontFamily}'`;
+    ctx.textAlign=el.align||'center';ctx.letterSpacing=(el.letterSpacing||0)+'px';
+    const lines=el.text.split('\n'),lh=el.fontSize*(el.lineHeight||1.2);
+    let tx=el.align==='left'?el.x:el.align==='right'?el.x+el.w:el.x+el.w/2;
+    lines.forEach((line,i)=>ctx.fillText(line,tx,el.y+el.fontSize+i*lh));
   }
   ctx.restore();
 }
 
-function drawSelection(el) {
-  ctx.save();
-  ctx.strokeStyle = '#c8a84b';
-  ctx.lineWidth = 2 / zoom;
-  ctx.setLineDash([6 / zoom, 4 / zoom]);
-  ctx.strokeRect(el.x - 2, el.y - 2, el.w + 4, el.h + 4);
-  ctx.setLineDash([]);
-  // Handles
-  const hs = 8 / zoom;
-  ctx.fillStyle = '#c8a84b';
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 1.5 / zoom;
-  [[el.x + el.w, el.y + el.h]].forEach(([hx, hy]) => {
-    ctx.fillRect(hx - hs/2, hy - hs/2, hs, hs);
-    ctx.strokeRect(hx - hs/2, hy - hs/2, hs, hs);
-  });
+function drawSelection(el){
+  ctx.save();ctx.strokeStyle='#b8952e';ctx.lineWidth=2/zoom;ctx.setLineDash([6/zoom,4/zoom]);
+  ctx.strokeRect(el.x-2,el.y-2,el.w+4,el.h+4);ctx.setLineDash([]);
+  const hs=8/zoom;ctx.fillStyle='#b8952e';ctx.strokeStyle='#fff';ctx.lineWidth=1.5/zoom;
+  [[el.x+el.w,el.y+el.h]].forEach(([hx,hy])=>{ctx.fillRect(hx-hs/2,hy-hs/2,hs,hs);ctx.strokeRect(hx-hs/2,hy-hs/2,hs,hs);});
   ctx.restore();
 }
 
 // ═══════════════════════════════════════════════════
-//  MOUSE INTERACTION
+//  MOUSE
 // ═══════════════════════════════════════════════════
-function canvasCoords(e) {
-  const r = cv.getBoundingClientRect();
-  return { x: (e.clientX - r.left) / zoom, y: (e.clientY - r.top) / zoom };
-}
+function canvasCoords(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/zoom,y:(e.clientY-r.top)/zoom};}
+function hitTest(mx,my){for(let i=elements.length-1;i>=0;i--){const el=elements[i];if(mx>=el.x&&mx<=el.x+el.w&&my>=el.y&&my<=el.y+el.h)return el;}return null;}
+function isOnHandle(el,mx,my){const hs=12/zoom;return Math.abs(mx-(el.x+el.w))<hs&&Math.abs(my-(el.y+el.h))<hs;}
 
-function hitTest(mx, my) {
-  for (let i = elements.length - 1; i >= 0; i--) {
-    const el = elements[i];
-    if (mx >= el.x && mx <= el.x + el.w && my >= el.y && my <= el.y + el.h) return el;
-  }
-  return null;
+function canvasMouseDown(e){
+  if(e.target!==cv)return;
+  const{x,y}=canvasCoords(e);
+  const sel=elements.find(el=>el.id===selectedId);
+  if(sel&&isOnHandle(sel,x,y)){saveState();resizing={id:sel.id,startX:x,startY:y,startW:sel.w,startH:sel.h};return;}
+  const hit=hitTest(x,y);
+  if(hit){selectedId=hit.id;dragging={id:hit.id,offX:x-hit.x,offY:y-hit.y};renderAll();}
+  else{selectedId=null;renderAll();}
 }
-
-function isOnHandle(el, mx, my) {
-  const hs = 12 / zoom;
-  const hx = el.x + el.w, hy = el.y + el.h;
-  return Math.abs(mx - hx) < hs && Math.abs(my - hy) < hs;
+function canvasMouseMove(e){
+  const{x,y}=canvasCoords(e);
+  if(dragging){const el=elements.find(e=>e.id===dragging.id);if(el){el.x=Math.round(x-dragging.offX);el.y=Math.round(y-dragging.offY);renderAll();}}
+  else if(resizing){const el=elements.find(e=>e.id===resizing.id);if(el){el.w=Math.max(20,Math.round(resizing.startW+(x-resizing.startX)));el.h=Math.max(10,Math.round(resizing.startH+(y-resizing.startY)));renderAll();}}
+  else{const sel=elements.find(el=>el.id===selectedId);
+    if(sel&&isOnHandle(sel,x,y))cv.style.cursor='nwse-resize';else if(hitTest(x,y))cv.style.cursor='move';else cv.style.cursor='default';}
 }
-
-function canvasMouseDown(e) {
-  if (e.target !== cv) return;
-  const { x, y } = canvasCoords(e);
-  const sel = elements.find(el => el.id === selectedId);
-  // Check resize handle first
-  if (sel && isOnHandle(sel, x, y)) {
-    saveState();
-    resizing = { id: sel.id, startX: x, startY: y, startW: sel.w, startH: sel.h };
-    return;
-  }
-  const hit = hitTest(x, y);
-  if (hit) {
-    if (hit.id !== selectedId) saveState();
-    selectedId = hit.id;
-    dragging = { id: hit.id, offX: x - hit.x, offY: y - hit.y };
-    renderAll();
-  } else {
-    selectedId = null;
-    renderAll();
-  }
-}
-
-function canvasMouseMove(e) {
-  const { x, y } = canvasCoords(e);
-  if (dragging) {
-    const el = elements.find(e => e.id === dragging.id);
-    if (el) {
-      el.x = Math.round(x - dragging.offX);
-      el.y = Math.round(y - dragging.offY);
-      renderAll();
-    }
-  } else if (resizing) {
-    const el = elements.find(e => e.id === resizing.id);
-    if (el) {
-      el.w = Math.max(20, Math.round(resizing.startW + (x - resizing.startX)));
-      el.h = Math.max(10, Math.round(resizing.startH + (y - resizing.startY)));
-      renderAll();
-    }
-  } else {
-    // Cursor
-    const sel = elements.find(el => el.id === selectedId);
-    if (sel && isOnHandle(sel, x, y)) {
-      cv.style.cursor = 'nwse-resize';
-    } else if (hitTest(x, y)) {
-      cv.style.cursor = 'move';
-    } else {
-      cv.style.cursor = 'default';
-    }
-  }
-}
-
-function canvasMouseUp() {
-  if (dragging) { saveState(); }
-  dragging = null;
-  resizing = null;
-}
+function canvasMouseUp(){if(dragging)saveState();dragging=null;resizing=null;}
 
 // ═══════════════════════════════════════════════════
-//  PROPERTIES PANEL
+//  PROPERTIES
 // ═══════════════════════════════════════════════════
-function renderProps() {
-  const body = document.getElementById('props-body');
-  const el = elements.find(e => e.id === selectedId);
-  if (!el) {
-    body.innerHTML = `<div class="prop-section"><div class="prop-label">Canvas</div>
-      <p style="font-size:11px;color:var(--mut);line-height:1.5;">Selecciona un elemento para editar sus propiedades.</p>
-      <div class="prop-row" style="margin-top:10px;"><label>W</label><input class="prop-input prop-input-sm" value="${canvasW}" onchange="canvasW=+this.value;setupCanvas();renderAll()">
-      <label>H</label><input class="prop-input prop-input-sm" value="${canvasH}" onchange="canvasH=+this.value;setupCanvas();renderAll()"></div>
-    </div>`;
-    return;
-  }
-  let html = '';
-  // Position
-  html += `<div class="prop-section"><div class="prop-label">Posición y tamaño</div>
+function renderProps(){
+  const body=document.getElementById('props-body');
+  const el=elements.find(e=>e.id===selectedId);
+  if(!el){body.innerHTML=`<div class="prop-section"><p style="font-size:12px;color:var(--mut);line-height:1.6;">Selecciona un elemento en el canvas para editar sus propiedades.</p></div>`;return;}
+  let h='';
+  h+=`<div class="prop-section"><div class="prop-label">Posición y tamaño</div>
     <div class="prop-row"><label>X</label><input class="prop-input prop-input-sm" type="number" value="${Math.round(el.x)}" onchange="setProp(${el.id},'x',+this.value)">
     <label>Y</label><input class="prop-input prop-input-sm" type="number" value="${Math.round(el.y)}" onchange="setProp(${el.id},'y',+this.value)"></div>
     <div class="prop-row"><label>W</label><input class="prop-input prop-input-sm" type="number" value="${Math.round(el.w)}" onchange="setProp(${el.id},'w',+this.value)">
     <label>H</label><input class="prop-input prop-input-sm" type="number" value="${Math.round(el.h)}" onchange="setProp(${el.id},'h',+this.value)"></div>
     <div class="prop-row"><label>Op.</label><input type="range" class="prop-range" min="0" max="1" step="0.05" value="${el.opacity}" onchange="setProp(${el.id},'opacity',+this.value)">
-    <span style="font-size:10px;color:var(--mut);min-width:30px;">${Math.round(el.opacity*100)}%</span></div>
-  </div>`;
-  // Type-specific
-  if (el.type === 'text') {
-    html += `<div class="prop-section"><div class="prop-label">Texto</div>
+    <span style="font-size:11px;color:var(--mut);min-width:32px;">${Math.round(el.opacity*100)}%</span></div></div>`;
+  if(el.type==='text'){
+    h+=`<div class="prop-section"><div class="prop-label">Texto</div>
       <textarea class="prop-input" style="height:60px;resize:vertical;margin-bottom:8px;" onchange="setProp(${el.id},'text',this.value)">${el.text}</textarea>
       <div class="prop-row"><label>Size</label><input class="prop-input prop-input-sm" type="number" value="${el.fontSize}" onchange="setProp(${el.id},'fontSize',+this.value)"></div>
       <div class="prop-row"><label>Peso</label><select class="prop-input" onchange="setProp(${el.id},'fontWeight',this.value)">
-        ${['300','400','500','600','700','900'].map(w => `<option value="${w}" ${el.fontWeight===w?'selected':''}>${w}</option>`).join('')}
-      </select></div>
+        ${['300','400','500','600','700','900'].map(w=>`<option value="${w}" ${el.fontWeight===w?'selected':''}>${w}</option>`).join('')}</select></div>
       <div class="prop-row"><label>Font</label><select class="prop-input" onchange="setProp(${el.id},'fontFamily',this.value)">
-        ${BRAND.fonts.map(f => `<option value="${f}" ${el.fontFamily===f?'selected':''}>${f}</option>`).join('')}
-      </select></div>
+        ${BRAND.fonts.map(f=>`<option value="${f}" ${el.fontFamily===f?'selected':''}>${f}</option>`).join('')}</select></div>
       <div class="prop-row"><label>Align</label><select class="prop-input" onchange="setProp(${el.id},'align',this.value)">
         <option value="left" ${el.align==='left'?'selected':''}>Izquierda</option>
         <option value="center" ${el.align==='center'?'selected':''}>Centro</option>
-        <option value="right" ${el.align==='right'?'selected':''}>Derecha</option>
-      </select></div>
+        <option value="right" ${el.align==='right'?'selected':''}>Derecha</option></select></div>
       <div class="prop-row"><label>Color</label><input type="color" class="prop-color" value="${el.color}" onchange="setProp(${el.id},'color',this.value)"></div>
-      <div class="prop-row"><label>Esp.</label><input class="prop-input prop-input-sm" type="number" value="${el.letterSpacing||0}" onchange="setProp(${el.id},'letterSpacing',+this.value)"></div>
-    </div>`;
-  } else if (el.type === 'rect' || el.type === 'line') {
-    html += `<div class="prop-section"><div class="prop-label">Estilo</div>
+      <div class="prop-row"><label>Esp.</label><input class="prop-input prop-input-sm" type="number" value="${el.letterSpacing||0}" onchange="setProp(${el.id},'letterSpacing',+this.value)"></div></div>`;
+  } else if(el.type==='rect'||el.type==='line'){
+    h+=`<div class="prop-section"><div class="prop-label">Estilo</div>
       <div class="prop-row"><label>Color</label><input type="color" class="prop-color" value="${el.color}" onchange="setProp(${el.id},'color',this.value)"></div>
-      ${el.type === 'rect' ? `<div class="prop-row"><label>Radio</label><input class="prop-input prop-input-sm" type="number" value="${el.radius||0}" onchange="setProp(${el.id},'radius',+this.value)"></div>
+      ${el.type==='rect'?`<div class="prop-row"><label>Radio</label><input class="prop-input prop-input-sm" type="number" value="${el.radius||0}" onchange="setProp(${el.id},'radius',+this.value)"></div>
       <div class="prop-row"><label>Borde</label><input type="color" class="prop-color" value="${el.borderColor==='none'?'#c8a84b':el.borderColor}" onchange="setProp(${el.id},'borderColor',this.value)">
-      <input class="prop-input prop-input-sm" type="number" value="${el.borderWidth||0}" onchange="setProp(${el.id},'borderWidth',+this.value)" placeholder="px"></div>` : ''}
-    </div>`;
-  } else if (el.type === 'image') {
-    html += `<div class="prop-section"><div class="prop-label">Imagen</div>
-      <div class="prop-row"><label>Radio</label><input class="prop-input prop-input-sm" type="number" value="${el.radius||0}" onchange="setProp(${el.id},'radius',+this.value)"></div>
-    </div>`;
-  } else if (el.type === 'placeholder') {
-    html += `<div class="prop-section"><div class="prop-label">Placeholder de foto</div>
-      <p style="font-size:11px;color:var(--mut);line-height:1.5;">Ve a la pestaña <b>Fotos</b>, sube una imagen y haz clic en ella para reemplazar este placeholder.</p>
-    </div>`;
+      <input class="prop-input prop-input-sm" type="number" value="${el.borderWidth||0}" onchange="setProp(${el.id},'borderWidth',+this.value)"></div>`:''}</div>`;
+  } else if(el.type==='image'){
+    h+=`<div class="prop-section"><div class="prop-label">Imagen</div>
+      <div class="prop-row"><label>Radio</label><input class="prop-input prop-input-sm" type="number" value="${el.radius||0}" onchange="setProp(${el.id},'radius',+this.value)"></div></div>`;
+  } else if(el.type==='placeholder'){
+    h+=`<div class="prop-section"><div class="prop-label">Placeholder</div>
+      <p style="font-size:11px;color:var(--mut);line-height:1.5;">Sube una foto en <b>Subidos</b> para reemplazar este placeholder.</p></div>`;
   }
-  // Layer controls
-  html += `<div class="prop-section"><div class="prop-label">Capa</div>
+  h+=`<div class="prop-section"><div class="prop-label">Capa</div>
     <div style="display:flex;gap:4px;">
-      <button class="btn btn-sec" style="flex:1;padding:5px;" onclick="moveLayer(${el.id},-1)">↓ Atrás</button>
-      <button class="btn btn-sec" style="flex:1;padding:5px;" onclick="moveLayer(${el.id},1)">↑ Frente</button>
-    </div>
-    <button class="btn btn-sec" style="width:100%;margin-top:6px;padding:5px;" onclick="duplicateEl(${el.id})">⧉ Duplicar</button>
-    <button class="prop-delete" onclick="deleteEl(${el.id})">✕ Eliminar elemento</button>
-  </div>`;
-  body.innerHTML = html;
+      <button class="btn-outline" style="flex:1;padding:6px;" onclick="moveLayer(${el.id},-1)">↓ Atrás</button>
+      <button class="btn-outline" style="flex:1;padding:6px;" onclick="moveLayer(${el.id},1)">↑ Frente</button></div>
+    <button class="btn-outline" style="width:100%;margin-top:6px;padding:6px;" onclick="duplicateEl(${el.id})">⧉ Duplicar</button>
+    <button class="prop-delete" onclick="deleteEl(${el.id})">✕ Eliminar</button></div>`;
+  body.innerHTML=h;
 }
 
-function setProp(id, key, val) {
-  const el = elements.find(e => e.id === id);
-  if (!el) return;
-  saveState();
-  el[key] = val;
-  renderAll();
-}
-function moveLayer(id, dir) {
-  const idx = elements.findIndex(e => e.id === id);
-  const ni = idx + dir;
-  if (ni < 0 || ni >= elements.length) return;
-  saveState();
-  [elements[idx], elements[ni]] = [elements[ni], elements[idx]];
-  renderAll();
-}
-function duplicateEl(id) {
-  const el = elements.find(e => e.id === id);
-  if (!el) return;
-  saveState();
-  const clone = { ...el, id: nextId++, x: el.x + 20, y: el.y + 20 };
-  elements.push(clone);
-  selectedId = clone.id;
-  renderAll();
-}
-function deleteEl(id) {
-  saveState();
-  elements = elements.filter(e => e.id !== id);
-  selectedId = null;
-  renderAll();
-}
+function setProp(id,key,val){const el=elements.find(e=>e.id===id);if(!el)return;saveState();el[key]=val;renderAll();}
+function moveLayer(id,dir){const idx=elements.findIndex(e=>e.id===id);const ni=idx+dir;if(ni<0||ni>=elements.length)return;saveState();[elements[idx],elements[ni]]=[elements[ni],elements[idx]];renderAll();}
+function duplicateEl(id){const el=elements.find(e=>e.id===id);if(!el)return;saveState();const c={...el,id:nextId++,x:el.x+20,y:el.y+20};elements.push(c);selectedId=c.id;renderAll();}
+function deleteEl(id){saveState();elements=elements.filter(e=>e.id!==id);selectedId=null;renderAll();}
 
 // ═══════════════════════════════════════════════════
 //  KEYBOARD
 // ═══════════════════════════════════════════════════
-document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-  const el = elements.find(el => el.id === selectedId);
-  if (e.key === 'Delete' || e.key === 'Backspace') {
-    if (el) { deleteEl(el.id); e.preventDefault(); }
-  }
-  if (e.key === 'Escape') { selectedId = null; renderAll(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undoAction(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === 'y') { e.preventDefault(); redoAction(); }
-  if ((e.ctrlKey || e.metaKey) && e.key === 'd') { e.preventDefault(); if (el) duplicateEl(el.id); }
-  // Arrow keys
-  if (el && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) {
-    e.preventDefault();
-    const step = e.shiftKey ? 10 : 1;
-    saveState();
-    if (e.key === 'ArrowUp') el.y -= step;
-    if (e.key === 'ArrowDown') el.y += step;
-    if (e.key === 'ArrowLeft') el.x -= step;
-    if (e.key === 'ArrowRight') el.x += step;
-    renderAll();
-  }
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  const el=elements.find(el=>el.id===selectedId);
+  if((e.key==='Delete'||e.key==='Backspace')&&el){deleteEl(el.id);e.preventDefault();}
+  if(e.key==='Escape'){selectedId=null;renderAll();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undoAction();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='y'){e.preventDefault();redoAction();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='d'){e.preventDefault();if(el)duplicateEl(el.id);}
+  if(el&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
+    e.preventDefault();const s=e.shiftKey?10:1;saveState();
+    if(e.key==='ArrowUp')el.y-=s;if(e.key==='ArrowDown')el.y+=s;
+    if(e.key==='ArrowLeft')el.x-=s;if(e.key==='ArrowRight')el.x+=s;renderAll();}
 });
-
-// Double-click to edit text
-cv.addEventListener('dblclick', e => {
-  const { x, y } = canvasCoords(e);
-  const hit = hitTest(x, y);
-  if (hit && hit.type === 'text') {
-    const newText = prompt('Editar texto:', hit.text);
-    if (newText !== null) {
-      saveState();
-      hit.text = newText;
-      renderAll();
-    }
-  }
-});
+cv.addEventListener('dblclick',e=>{const{x,y}=canvasCoords(e);const hit=hitTest(x,y);
+  if(hit&&hit.type==='text'){const t=prompt('Editar texto:',hit.text);if(t!==null){saveState();hit.text=t;renderAll();}}});
 
 // ═══════════════════════════════════════════════════
 //  EXPORT
 // ═══════════════════════════════════════════════════
-function exportCanvas() {
-  // Render without selection
-  const prevSel = selectedId;
-  selectedId = null;
-  renderAll();
-  const link = document.createElement('a');
-  link.download = `MICSA_${canvasW}x${canvasH}.png`;
-  link.href = cv.toDataURL('image/png');
-  link.click();
-  selectedId = prevSel;
-  renderAll();
+function exportCanvas(){
+  const prev=selectedId;selectedId=null;renderAll();
+  const link=document.createElement('a');link.download=`MICSA_${canvasW}x${canvasH}.png`;
+  link.href=cv.toDataURL('image/png');link.click();selectedId=prev;renderAll();
 }
 
 // ═══════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════
 setupCanvas();
-renderSidebar('templates');
+renderDrawer('designs');
 renderAll();
 </script>
 </body>
