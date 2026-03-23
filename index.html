@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MICSA Banner · Code Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#0d1017;--panel:#141820;--border:#252d3a;--acc:#c8a84b;--txt:#d4dde8;--mut:#4a5a6e;--green:#3fb950;--red:#f85149;--in:#0a0e14;}
+html,body{background:var(--bg);color:var(--txt);font-family:'Barlow Condensed',sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+/* TOP */
+#top{height:44px;min-height:44px;background:#0a0e14;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;flex-shrink:0;}
+.logo{font-family:'Black Ops One',sans-serif;font-size:14px;letter-spacing:3px;color:var(--acc);}
+.sub{font-size:9px;color:var(--mut);letter-spacing:2px;margin-left:10px;}
+.acts{display:flex;gap:6px;align-items:center;}
+.btn{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:3px;cursor:pointer;border:1px solid transparent;transition:all .15s;}
+.btn-acc{background:var(--acc);color:#000;border-color:var(--acc);}
+.btn-acc:hover{opacity:.85;}
+.btn-sec{background:transparent;color:var(--mut);border-color:var(--border);}
+.btn-sec:hover{border-color:var(--acc);color:var(--acc);}
+.btn-green{background:#1a3a1a;color:var(--green);border-color:#2a5a2a;}
+.btn-green:hover{background:#2a4a2a;}
+.btn-red{background:#3a1a1a;color:var(--red);border-color:#5a2a2a;}
+.btn-red:hover{background:#4a2020;}
+.status{font-size:10px;padding:4px 10px;border-radius:3px;letter-spacing:.5px;}
+.status.ok{color:var(--green);background:#0d2a0d;border:1px solid #1a4a1a;}
+.status.err{color:var(--red);background:#2a0d0d;border:1px solid #4a1a1a;}
+/* WORKSPACE */
+#ws{flex:1;display:flex;overflow:hidden;}
+/* CODE PANEL */
+#cp{width:420px;min-width:300px;display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border);overflow:hidden;}
+#cp-header{padding:8px 12px;background:#0a0e14;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+#cp-header span{font-size:9px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;}
+#cp-header .tag{font-size:8px;background:#1a2a1a;color:var(--green);padding:2px 6px;border-radius:2px;letter-spacing:1px;}
+textarea#code{flex:1;background:var(--in);color:#a8d8a8;font-family:'Courier New',monospace;font-size:11.5px;line-height:1.65;padding:14px;border:none;outline:none;resize:none;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#252d3a transparent;tab-size:2;}
+textarea#code::selection{background:#c8a84b33;}
+/* PHOTO PANEL */
+#pp{width:220px;min-width:180px;background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;}
+#pp-header{padding:8px 12px;background:#0a0e14;border-bottom:1px solid var(--border);flex-shrink:0;}
+#pp-header span{font-size:9px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;}
+.photo-sec{padding:10px 12px;border-bottom:1px solid var(--border);}
+.photo-sec .lbl{font-size:8px;color:var(--acc);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+.pslot{width:100%;aspect-ratio:16/9;border:2px dashed var(--border);border-radius:4px;position:relative;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#0a0e14;transition:border-color .2s;margin-bottom:5px;}
+.pslot:hover{border-color:var(--acc);}
+.pslot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.8;}
+.pslot .plbl{position:relative;z-index:1;font-size:9px;color:#4a5a6e;background:rgba(0,0,0,.75);padding:3px 8px;border-radius:2px;letter-spacing:1px;}
+.pslot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.clear-btn{width:100%;background:transparent;border:1px solid var(--border);color:var(--mut);font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;padding:4px;border-radius:2px;cursor:pointer;margin-top:2px;}
+.clear-btn:hover{border-color:var(--red);color:var(--red);}
+/* CANVAS AREA */
+#ca{flex:1;display:flex;align-items:center;justify-content:center;background:#08090d;overflow:hidden;padding:16px;position:relative;}
+canvas{display:block;max-width:100%;max-height:100%;border-radius:3px;box-shadow:0 0 0 1px var(--border),0 12px 40px #000c;}
+#overlay{position:absolute;inset:0;background:rgba(8,9,13,.96);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:10;}
+#overlay h2{font-family:'Black Ops One',sans-serif;font-size:18px;letter-spacing:3px;color:var(--acc);}
+.uslots{display:flex;gap:8px;}
+.uslot{width:120px;aspect-ratio:4/3;border:2px dashed #253040;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;gap:4px;background:#0a0e14;}
+.uslot:hover{border-color:var(--acc);}
+.uslot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;}
+.uslot span{position:relative;z-index:1;font-size:8px;color:var(--mut);letter-spacing:1px;text-align:center;}
+.uslot .un{font-size:16px;font-weight:900;color:#3a4a5a;}
+.uslot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.skip-btn{background:transparent;border:1px solid #253040;color:#3a4a5a;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;padding:5px 12px;border-radius:2px;cursor:pointer;}
+.skip-btn:hover{color:var(--mut);border-color:var(--mut);}
+/* Resize handle */
+#resize-handle{width:4px;background:var(--border);cursor:col-resize;flex-shrink:0;transition:background .2s;}
+#resize-handle:hover{background:var(--acc);}
+</style>
+</head>
+<body>
+<div id="top">
+  <div style="display:flex;align-items:center">
+    <span class="logo">MICSA</span>
+    <span class="sub">BANNER · CODE EDITOR</span>
+  </div>
+  <div class="acts">
+    <span id="status" class="status ok">✓ OK</span>
+    <button class="btn btn-green" onclick="applyCode()">▶ Aplicar</button>
+    <button class="btn btn-sec" onclick="resetCode()">↺ Reset</button>
+    <button class="btn btn-acc" onclick="exportPNG()">⬇ PNG</button>
+  </div>
+</div>
+<div id="ws">
+  <!-- CODE PANEL -->
+  <div id="cp">
+    <div id="cp-header">
+      <span>config.json</span>
+      <span class="tag">LIVE</span>
+    </div>
+    <textarea id="code" spellcheck="false"></textarea>
+  </div>
+  <div id="resize-handle"></div>
+  <!-- PHOTO PANEL -->
+  <div id="pp">
+    <div id="pp-header"><span>Imágenes</span></div>
+    <div class="photo-sec">
+      <div class="lbl">Foto 1 — Principal</div>
+      <div class="pslot"><img id="pv0"><span class="plbl">Subir foto 1</span><input type="file" accept="image/*" onchange="loadPhoto(0,this)"></div>
+      <button class="clear-btn" onclick="clearPhoto(0)">✕ Quitar</button>
+    </div>
+    <div class="photo-sec">
+      <div class="lbl">Foto 2 — Media arriba</div>
+      <div class="pslot"><img id="pv1"><span class="plbl">Subir foto 2</span><input type="file" accept="image/*" onchange="loadPhoto(1,this)"></div>
+      <button class="clear-btn" onclick="clearPhoto(1)">✕ Quitar</button>
+    </div>
+    <div class="photo-sec">
+      <div class="lbl">Foto 3 — Media abajo</div>
+      <div class="pslot"><img id="pv2"><span class="plbl">Subir foto 3</span><input type="file" accept="image/*" onchange="loadPhoto(2,this)"></div>
+      <button class="clear-btn" onclick="clearPhoto(2)">✕ Quitar</button>
+    </div>
+    <div class="photo-sec">
+      <div class="lbl">Logo</div>
+      <div class="pslot"><img id="pv4"><span class="plbl">Subir logo</span><input type="file" accept="image/*" onchange="loadPhoto(4,this)"></div>
+      <button class="clear-btn" onclick="clearPhoto(4)">✕ Quitar</button>
+    </div>
+    <div class="photo-sec">
+      <div class="lbl">Fondo (opcional)</div>
+      <div class="pslot"><img id="pv3"><span class="plbl">Subir fondo</span><input type="file" accept="image/*" onchange="loadPhoto(3,this)"></div>
+      <button class="clear-btn" onclick="clearPhoto(3)">✕ Quitar</button>
+    </div>
+  </div>
+  <!-- CANVAS -->
+  <div id="ca">
+    <div id="overlay">
+      <h2>CARGA TUS FOTOS</h2>
+      <div class="uslots">
+        <div class="uslot"><img id="up0"><span class="un">1</span><span>Principal</span><input type="file" accept="image/*" onchange="loadPhoto(0,this)"></div>
+        <div class="uslot"><img id="up1"><span class="un">2</span><span>Media</span><input type="file" accept="image/*" onchange="loadPhoto(1,this)"></div>
+        <div class="uslot"><img id="up2"><span class="un">3</span><span>Extra</span><input type="file" accept="image/*" onchange="loadPhoto(2,this)"></div>
+      </div>
+      <button class="skip-btn" onclick="document.getElementById('overlay').style.display='none';render()">Continuar sin fotos →</button>
+    </div>
+    <canvas id="c" width="1200" height="628"></canvas>
+  </div>
+</div>
+<script>
+const DEFAULT_CFG = {
+  "canvas": { "width": 1200, "height": 628 },
+  "background": { "color": "#06060a" },
+  "photos": {
+    "p1": { "x": 0, "y": 0, "w": 520, "h": 628, "focusX": 0.5, "focusY": 0.5, "zoom": 1.0, "opacity": 0.72 },
+    "p2": { "x": 523, "y": 0, "w": 230, "h": 312, "focusX": 0.5, "focusY": 0.4, "zoom": 1.0, "opacity": 0.65 },
+    "p3": { "x": 523, "y": 316, "w": 230, "h": 312, "focusX": 0.5, "focusY": 0.5, "zoom": 1.0, "opacity": 0.65 }
+  },
+  "bgPhoto": { "opacity": 0.6, "focusX": 0.5, "focusY": 0.5 },
+  "panel": {
+    "color": "#06060a",
+    "opacity": 1.0,
+    "fadeStart": 0.28,
+    "fadeEnd": 0.54
+  },
+  "accentLine": {
+    "x": 758,
+    "color": "#c8a84b",
+    "opacity": 0.7,
+    "width": 1.5
+  },
+  "corner": { "show": true, "color": "#c8a84b", "size": 65, "opacity": 0.18 },
+  "logo": {
+    "x": 810, "y": 60,
+    "width": 200,
+    "opacity": 1.0
+  },
+  "texts": {
+    "topLabel": {
+      "text": "PROYECTO COMPLETADO · ZONA INDUSTRIAL MONTERREY",
+      "x": 20, "y": 23,
+      "font": "500 8px 'Barlow Condensed'",
+      "color": "#c8a84b",
+      "opacity": 0.28,
+      "letterSpacing": "2px"
+    },
+    "eyebrow": {
+      "text": "MONTAJE INDUSTRIAL · PRENSA DE ALTO TONELAJE",
+      "x": 776, "y": 80,
+      "font": "600 10px 'Barlow Condensed'",
+      "color": "#c8a84b",
+      "opacity": 0.85,
+      "letterSpacing": "2.5px"
+    },
+    "bigNumber": {
+      "text": "20",
+      "x": 776, "y": 190,
+      "font": "900 108px 'Barlow Condensed'",
+      "color": "#c8a84b",
+      "opacity": 1.0,
+      "letterSpacing": "-2px"
+    },
+    "title": {
+      "text": "TONELADAS",
+      "x": 776, "y": 278,
+      "font": "900 76px 'Barlow Condensed'",
+      "color": "#f0f4f8",
+      "opacity": 1.0,
+      "letterSpacing": "-1px"
+    },
+    "subtitle": {
+      "text": "SIN ERROR",
+      "x": 776, "y": 318,
+      "font": "900 36px 'Barlow Condensed'",
+      "color": "#f0f4f8",
+      "opacity": 0.14,
+      "letterSpacing": "2px",
+      "stroke": true
+    },
+    "copy1": {
+      "text": "Traslado y maniobra de prensa industrial en entorno urbano.",
+      "x": 776, "y": 356,
+      "font": "300 13px 'Barlow'",
+      "color": "#55667a",
+      "opacity": 1.0,
+      "letterSpacing": "0px"
+    },
+    "copy2": {
+      "text": "Coordinación técnica. Seguridad absoluta. Entrega a tiempo.",
+      "x": 776, "y": 376,
+      "font": "500 13px 'Barlow'",
+      "color": "#8a9faf",
+      "opacity": 1.0,
+      "letterSpacing": "0px"
+    },
+    "brandName": {
+      "text": "MICSA",
+      "x": 776, "y": 500,
+      "font": "400 24px 'Black Ops One'",
+      "color": "#f0f4f8",
+      "opacity": 1.0,
+      "letterSpacing": "4px"
+    },
+    "brandSub": {
+      "text": "MONTAJES E IZAJES DEL CENTRO INDUSTRIAL",
+      "x": 776, "y": 518,
+      "font": "400 9px 'Barlow Condensed'",
+      "color": "#2e3e50",
+      "opacity": 1.0,
+      "letterSpacing": "2px"
+    },
+    "brandFoot": {
+      "text": "REPSE NO. 282364  ·  RFC: MIC2301268S5  ·  CIUDAD FRONTERA, COAHUILA",
+      "x": 776, "y": 532,
+      "font": "400 8px 'Barlow Condensed'",
+      "color": "#1e2e3a",
+      "opacity": 1.0,
+      "letterSpacing": "1px"
+    }
+  },
+  "tags": {
+    "items": ["IZAJES", "MONTAJES", "LOWBOY", "SEGURIDAD"],
+    "x": 776, "y": 400,
+    "color": "#c8a84b",
+    "gap": 8
+  },
+  "separator": {
+    "x1": 776, "y1": 462, "x2": 1176, "y2": 462,
+    "color": "#c8a84b", "opacity": 0.18
+  },
+  "stats": [
+    { "num": "20T", "label": "PESO TOTAL",  "x": 22,  "y": 594 },
+    { "num": "0",   "label": "INCIDENTES",  "x": 162, "y": 594 }
+  ],
+  "statStyle": {
+    "bgColor": "#06060a",
+    "bgOpacity": 0.88,
+    "accentColor": "#c8a84b",
+    "numColor": "#c8a84b",
+    "labelColor": "rgba(255,255,255,0.45)",
+    "boxW": 118, "boxH": 62
+  }
+};
+
+const PHOTOS = [null, null, null, null, null];
+function loadPhoto(idx, input) {
+  const file = input.files[0]; if (!file) return;
+  const url = URL.createObjectURL(file);
+  const im = new Image();
+  im.onload = () => {
+    PHOTOS[idx] = im;
+    const pvMap = { 0:'pv0', 1:'pv1', 2:'pv2', 3:'pv3', 4:'pv4' };
+    const upMap = { 0:'up0', 1:'up1', 2:'up2' };
+    const pv = document.getElementById(pvMap[idx]); if (pv) pv.src = url;
+    const up = document.getElementById(upMap[idx]); if (up) up.src = url;
+    if (idx < 3) document.getElementById('overlay').style.display = 'none';
+    render();
+  };
+  im.src = url;
+}
+function clearPhoto(idx) {
+  PHOTOS[idx] = null;
+  const pvMap = { 0:'pv0', 1:'pv1', 2:'pv2', 3:'pv3', 4:'pv4' };
+  const el = document.getElementById(pvMap[idx]);
+  if (el) el.src = '';
+  render();
+}
+
+let currentCfg = JSON.parse(JSON.stringify(DEFAULT_CFG));
+function initCode() {
+  const saved = loadSaved();
+  currentCfg = saved || JSON.parse(JSON.stringify(DEFAULT_CFG));
+  document.getElementById('code').value = JSON.stringify(currentCfg, null, 2);
+}
+function applyCode() {
+  const ta = document.getElementById('code');
+  const st = document.getElementById('status');
+  try {
+    currentCfg = JSON.parse(ta.value);
+    st.className = 'status ok'; st.textContent = '✓ OK';
+    save(currentCfg);
+    render();
+  } catch(e) {
+    st.className = 'status err'; st.textContent = '✗ JSON error: ' + e.message.split('\n')[0];
+  }
+}
+function resetCode() {
+  currentCfg = JSON.parse(JSON.stringify(DEFAULT_CFG));
+  document.getElementById('code').value = JSON.stringify(currentCfg, null, 2);
+  document.getElementById('status').className = 'status ok';
+  document.getElementById('status').textContent = '✓ OK';
+  render();
+}
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'Enter' || e.key === 's')) {
+    e.preventDefault(); applyCode();
+  }
+});
+
+function rgba(hex, a) {
+  if (!hex || hex.length < 7) return `rgba(0,0,0,${a})`;
+  return `rgba(${parseInt(hex.slice(1,3),16)},${parseInt(hex.slice(3,5),16)},${parseInt(hex.slice(5,7),16)},${a})`;
+}
+function coverAt(ctx, img, x, y, w, h, fx, fy, zoom) {
+  if (!img) return;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  const iw = img.naturalWidth, ih = img.naturalHeight;
+  const sc = Math.max(w/iw, h/ih) * (zoom || 1);
+  const sw = iw*sc, sh = ih*sc;
+  ctx.drawImage(img, x + (w-sw)*(fx??0.5), y + (h-sh)*(fy??0.5), sw, sh);
+  ctx.restore();
+}
+function drawText(ctx, t) {
+  if (!t || !t.text) return;
+  ctx.save();
+  ctx.globalAlpha = t.opacity ?? 1;
+  ctx.font = t.font || '400 12px sans-serif';
+  ctx.letterSpacing = t.letterSpacing || '0px';
+  if (t.stroke) {
+    ctx.strokeStyle = t.color || '#fff';
+    ctx.lineWidth = 1;
+    ctx.strokeText(t.text, t.x, t.y);
+  } else {
+    ctx.fillStyle = t.color || '#fff';
+    ctx.fillText(t.text, t.x, t.y);
+  }
+  ctx.restore();
+}
+function render() {
+  const c = currentCfg;
+  const cv = document.getElementById('c');
+  const ctx = cv.getContext('2d');
+  const W = c.canvas.width, H = c.canvas.height;
+  ctx.fillStyle = c.background.color;
+  ctx.fillRect(0, 0, W, H);
+  if (PHOTOS[3] && c.bgPhoto) {
+    coverAt(ctx, PHOTOS[3], 0, 0, W, H, c.bgPhoto.focusX, c.bgPhoto.focusY, 1);
+    ctx.fillStyle = rgba(c.background.color, 1 - c.bgPhoto.opacity);
+    ctx.fillRect(0, 0, W, H);
+  }
+  const p = c.photos;
+  if (p) {
+    ['p1','p2','p3'].forEach((k,i) => {
+      const ph = p[k]; if (!ph) return;
+      coverAt(ctx, PHOTOS[i], ph.x, ph.y, ph.w, ph.h, ph.focusX, ph.focusY, ph.zoom);
+      ctx.fillStyle = rgba(c.background.color, 1 - ph.opacity);
+      ctx.fillRect(ph.x, ph.y, ph.w, ph.h);
+    });
+    if (p.p2 && p.p3) {
+      ctx.fillStyle = c.background.color;
+      ctx.fillRect(p.p2.x, p.p2.y + p.p2.h, p.p2.w, p.p3.y - (p.p2.y + p.p2.h));
+    }
+  }
+  const pn = c.panel;
+  if (pn) {
+    const fade = ctx.createLinearGradient(W * pn.fadeStart * 0.5, 0, W, 0);
+    fade.addColorStop(0, rgba(pn.color, 0));
+    fade.addColorStop(pn.fadeStart, rgba(pn.color, 0.5 * pn.opacity));
+    fade.addColorStop(pn.fadeEnd, rgba(pn.color, pn.opacity));
+    fade.addColorStop(1, rgba(pn.color, pn.opacity));
+    ctx.fillStyle = fade; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = rgba(pn.color, pn.opacity);
+    ctx.fillRect(W * pn.fadeEnd, 0, W * (1 - pn.fadeEnd), H);
+    let g;
+    g = ctx.createLinearGradient(0, 0, 0, H * 0.13);
+    g.addColorStop(0, rgba(pn.color, 0.85 * pn.opacity));
+    g.addColorStop(1, rgba(pn.color, 0));
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H * 0.13);
+    g = ctx.createLinearGradient(0, H * 0.75, 0, H);
+    g.addColorStop(0, rgba(pn.color, 0));
+    g.addColorStop(1, rgba(pn.color, 0.92 * pn.opacity));
+    ctx.fillStyle = g; ctx.fillRect(0, H * 0.75, W, H * 0.25);
+  }
+  const al = c.accentLine;
+  if (al) {
+    const lg = ctx.createLinearGradient(0, 0, 0, H);
+    lg.addColorStop(0, rgba(al.color, 0));
+    lg.addColorStop(0.15, rgba(al.color, al.opacity * 0.7));
+    lg.addColorStop(0.5,  rgba(al.color, al.opacity));
+    lg.addColorStop(0.85, rgba(al.color, al.opacity * 0.7));
+    lg.addColorStop(1, rgba(al.color, 0));
+    ctx.strokeStyle = lg; ctx.lineWidth = al.width || 1.5;
+    ctx.beginPath(); ctx.moveTo(al.x + 5, 0); ctx.lineTo(al.x - 5, H); ctx.stroke();
+  }
+  const co = c.corner;
+  if (co && co.show) {
+    ctx.save(); ctx.globalAlpha = co.opacity; ctx.fillStyle = co.color;
+    ctx.beginPath(); ctx.moveTo(W,0); ctx.lineTo(W-co.size,0); ctx.lineTo(W,co.size); ctx.closePath();
+    ctx.fill(); ctx.restore();
+  }
+  if (PHOTOS[4] && c.logo) {
+    const lo = c.logo;
+    const lw = lo.width;
+    const lh = lw / (PHOTOS[4].naturalWidth / PHOTOS[4].naturalHeight);
+    ctx.save(); ctx.globalAlpha = lo.opacity ?? 1;
+    ctx.drawImage(PHOTOS[4], lo.x, lo.y, lw, lh);
+    ctx.restore();
+  }
+  if (c.texts) {
+    Object.values(c.texts).forEach(t => drawText(ctx, t));
+  }
+  if (c.tags) {
+    const tg = c.tags;
+    let tx = tg.x;
+    ctx.font = '700 10px "Barlow Condensed"'; ctx.letterSpacing = '1.5px';
+    (tg.items || []).forEach(item => {
+      const tw = ctx.measureText(item).width + 22;
+      ctx.fillStyle = rgba(tg.color, 0.12);
+      ctx.strokeStyle = rgba(tg.color, 0.32); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.roundRect(tx, tg.y, tw, 22, 2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = tg.color; ctx.fillText(item, tx + 11, tg.y + 15);
+      tx += tw + (tg.gap || 7);
+    });
+  }
+  if (c.separator) {
+    const s = c.separator;
+    ctx.strokeStyle = rgba(s.color, s.opacity); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); ctx.stroke();
+  }
+  if (c.stats && c.statStyle) {
+    const ss = c.statStyle;
+    c.stats.forEach(st => {
+      ctx.fillStyle = rgba(ss.bgColor, ss.bgOpacity);
+      ctx.beginPath(); ctx.roundRect(st.x - 10, st.y - ss.boxH + 12, ss.boxW, ss.boxH, 3); ctx.fill();
+      ctx.fillStyle = ss.accentColor; ctx.fillRect(st.x - 10, st.y - ss.boxH + 12, 3, ss.boxH);
+      ctx.font = '900 42px "Barlow Condensed"'; ctx.fillStyle = ss.numColor; ctx.letterSpacing = '-0.5px';
+      ctx.fillText(st.num, st.x + 4, st.y - 10);
+      ctx.font = '600 9px "Barlow Condensed"'; ctx.fillStyle = ss.labelColor; ctx.letterSpacing = '1.5px';
+      ctx.fillText(st.label, st.x + 4, st.y + 5);
+    });
+  }
+}
+
+function save(cfg) {
+  try { localStorage.setItem('micsa_cfg', JSON.stringify(cfg)); } catch(e) {}
+}
+function loadSaved() {
+  try { const r = localStorage.getItem('micsa_cfg'); return r ? JSON.parse(r) : null; } catch(e) { return null; }
+}
+function exportPNG() {
+  const link = document.createElement('a');
+  link.download = 'MICSA_Banner.png';
+  link.href = document.getElementById('c').toDataURL('image/png');
+  link.click();
+}
+
+const handle = document.getElementById('resize-handle');
+let resizing = false, startX = 0, startW = 0;
+handle.addEventListener('mousedown', e => {
+  resizing = true; startX = e.clientX;
+  startW = document.getElementById('cp').offsetWidth;
+});
+document.addEventListener('mousemove', e => {
+  if (!resizing) return;
+  const newW = Math.max(200, Math.min(700, startW + e.clientX - startX));
+  document.getElementById('cp').style.width = newW + 'px';
+});
+document.addEventListener('mouseup', () => { resizing = false; });
+
+initCode();
+render();
+</script>
+</body>
+</html>
