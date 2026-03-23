@@ -328,6 +328,17 @@ function renderDrawer(panel) {
         <div class="qd-card" onclick="applyQuickDesign('contacto')"><div class="qd-name">📞 Contacto</div><div class="qd-desc">Datos de MICSA + foto</div></div>
         <div class="qd-card" onclick="applyQuickDesign('cotizacion')"><div class="qd-name">📄 Pide tu Cotización</div><div class="qd-desc">Call-to-action con teléfono</div></div>
         <div class="qd-card" onclick="applyQuickDesign('equipo')"><div class="qd-name">👷 Nuestro Equipo</div><div class="qd-desc">Foto del equipo + texto</div></div>
+      </div>
+      <div class="d-section">
+        <div class="d-label">🧤 EPP / Industrial Supply</div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_bienvenida')"><div class="qd-name">🏪 Bienvenida Tienda</div><div class="qd-desc">Presentación de MICSA Industrial Supply</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_producto')"><div class="qd-name">🥾 Producto Destacado</div><div class="qd-desc">Foto grande + precio + detalles</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_catalogo')"><div class="qd-name">📦 Catálogo EPP</div><div class="qd-desc">4 productos en grid con nombres</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_promo')"><div class="qd-name">🔥 Promoción / Oferta</div><div class="qd-desc">Descuento llamativo + producto</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_nuevo')"><div class="qd-name">✨ Nuevo Producto</div><div class="qd-desc">Lanzamiento de producto nuevo</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_seguridad')"><div class="qd-name">⛑ Seguridad Laboral</div><div class="qd-desc">Checklist de equipo obligatorio</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_contacto')"><div class="qd-name">📱 Contacto Supply</div><div class="qd-desc">WhatsApp + teléfono + web</div></div>
+        <div class="qd-card" onclick="applyQuickDesign('epp_envio')"><div class="qd-name">🚚 Envíos</div><div class="qd-desc">Info de envíos y cobertura</div></div>
       </div>`;
   } else if (panel === 'elements') {
     title.textContent = 'Elementos';
@@ -657,6 +668,126 @@ function applyQuickDesign(type) {
     elements.push(makeText('NUESTRO EQUIPO',{x:W*0.05,y:H*0.58,w:W*0.5,h:16,fontSize:10,fontWeight:'700',color:gold,align:'left',letterSpacing:4}));
     elements.push(makeText('PROFESIONALES\nCERTIFICADOS',{x:W*0.05,y:H*0.58+22,w:W*0.5,h:100,fontSize:48,fontWeight:'900',color:white,align:'left',lineHeight:1.05}));
     brand();
+  }
+  /* ─── EPP / INDUSTRIAL SUPPLY TEMPLATES ─── */
+  const orange='#E8842C', darkBg='#1a1a2e', lightGray='#f5f5f5';
+  const brandSupply=()=>{
+    elements.push(makeText('MICSA',{x:W*0.05,y:H-80,w:200,h:36,fontSize:26,fontFamily:'Black Ops One',fontWeight:'400',color:white,align:'left',letterSpacing:4}));
+    elements.push(makeText('INDUSTRIAL SUPPLY',{x:W*0.05,y:H-48,w:300,h:20,fontSize:10,fontWeight:'700',fontFamily:'Barlow Condensed',color:orange,align:'left',letterSpacing:3}));
+  };
+  const contactBar=()=>{
+    elements.push(makeRect({x:0,y:H-90,w:W,h:90,color:dark,opacity:0.95}));
+    elements.push(makeRect({x:0,y:H-90,w:W,h:3,color:orange}));
+    elements.push(makeText('📱 WhatsApp\n+52 1 866 176 6621',{x:W*0.03,y:H-82,w:W*0.3,h:70,fontSize:12,fontWeight:'500',fontFamily:'Barlow',color:white,align:'center',lineHeight:1.5}));
+    elements.push(makeText('📞 Teléfono\n866-176-6621',{x:W*0.35,y:H-82,w:W*0.3,h:70,fontSize:12,fontWeight:'500',fontFamily:'Barlow',color:white,align:'center',lineHeight:1.5}));
+    elements.push(makeText('🌐 Web\nmicsa-industrial-supply.myshopify.com',{x:W*0.67,y:H-82,w:W*0.3,h:70,fontSize:11,fontWeight:'500',fontFamily:'Barlow',color:white,align:'center',lineHeight:1.5}));
+  };
+  if(type==='epp_bienvenida'){
+    elements.push(bg(darkBg));
+    elements.push(makePlaceholder({x:W*0.45,y:0,w:W*0.55,h:H,label:'FOTO TIENDA / PRODUCTOS'}));
+    elements.push(makeRect({x:W*0.4,y:0,w:W*0.6,h:H,color:dark,opacity:0.35}));
+    elements.push(makeRect({x:0,y:0,w:W*0.5,h:H,color:darkBg,opacity:0.95}));
+    elements.push(makeRect({x:W*0.08,y:H*0.08,w:6,h:H*0.15,color:orange}));
+    elements.push(makeText('MICSA',{x:W*0.12,y:H*0.07,w:W*0.35,h:50,fontSize:38,fontFamily:'Black Ops One',fontWeight:'400',color:white,align:'left',letterSpacing:4}));
+    elements.push(makeText('INDUSTRIAL SUPPLY',{x:W*0.12,y:H*0.07+46,w:W*0.35,h:24,fontSize:16,fontWeight:'700',fontFamily:'Barlow Condensed',color:orange,align:'left',letterSpacing:3}));
+    elements.push(makeText('BIENVENIDOS',{x:W*0.05,y:H*0.32,w:W*0.42,h:80,fontSize:64,fontWeight:'900',color:orange,align:'left'}));
+    elements.push(makeText('Tu socio confiable en\nequipamiento de seguridad\nindustrial',{x:W*0.05,y:H*0.32+85,w:W*0.4,h:80,fontSize:18,fontWeight:'400',fontFamily:'Barlow',color:'#b0b8c8',align:'left',lineHeight:1.6}));
+    elements.push(makeText('🥾 Botas · 🧤 Guantes · ⛑ Cascos\n🦺 Chalecos · 🥽 Lentes · 👷 EPP',{x:W*0.05,y:H*0.68,w:W*0.4,h:50,fontSize:14,fontWeight:'500',fontFamily:'Barlow',color:'#8090a0',align:'left',lineHeight:1.8}));
+    contactBar();
+  } else if(type==='epp_producto'){
+    elements.push(bg(darkBg));
+    elements.push(makePlaceholder({x:W*0.5,y:H*0.05,w:W*0.45,h:H*0.7,label:'FOTO PRODUCTO'}));
+    elements.push(makeRect({x:W*0.48,y:H*0.03,w:W*0.49,h:H*0.74,color:'transparent',borderColor:orange,borderWidth:2}));
+    elements.push(makeText('PRODUCTO DESTACADO',{x:W*0.05,y:H*0.06,w:W*0.4,h:16,fontSize:10,fontWeight:'700',color:orange,align:'left',letterSpacing:4}));
+    elements.push(makeText('NOMBRE\nDEL PRODUCTO',{x:W*0.05,y:H*0.12,w:W*0.4,h:120,fontSize:48,fontWeight:'900',color:white,align:'left',lineHeight:1.05}));
+    elements.push(makeRect({x:W*0.05,y:H*0.42,w:W*0.35,h:60,color:orange,radius:4}));
+    elements.push(makeText('$000.00 MXN',{x:W*0.05,y:H*0.42+10,w:W*0.35,h:40,fontSize:32,fontWeight:'900',color:white}));
+    elements.push(makeText('✓  Material de alta resistencia\n✓  Certificación NOM\n✓  Disponible en todas las tallas\n✓  Envío a todo México',{x:W*0.05,y:H*0.56,w:W*0.4,h:100,fontSize:14,fontWeight:'500',fontFamily:'Barlow',color:'#b0b8c8',align:'left',lineHeight:1.8}));
+    brandSupply();
+  } else if(type==='epp_catalogo'){
+    elements.push(bg(darkBg));
+    elements.push(makeRect({x:0,y:0,w:W,h:H*0.18,color:dark}));
+    elements.push(makeRect({x:0,y:H*0.18-3,w:W,h:3,color:orange}));
+    elements.push(makeText('MICSA INDUSTRIAL SUPPLY',{x:W*0.05,y:H*0.02,w:W*0.5,h:20,fontSize:10,fontWeight:'700',color:orange,align:'left',letterSpacing:4}));
+    elements.push(makeText('CATÁLOGO EPP',{x:W*0.05,y:H*0.02+22,w:W*0.5,h:60,fontSize:48,fontWeight:'900',color:white,align:'left'}));
+    const gx=W*0.03, gy=H*0.22, gw=(W*0.94)/2-10, gh=(H*0.56)/2-10;
+    elements.push(makePlaceholder({x:gx,y:gy,w:gw,h:gh,label:'PRODUCTO 1'}));
+    elements.push(makePlaceholder({x:gx+gw+20,y:gy,w:gw,h:gh,label:'PRODUCTO 2'}));
+    elements.push(makePlaceholder({x:gx,y:gy+gh+20,w:gw,h:gh,label:'PRODUCTO 3'}));
+    elements.push(makePlaceholder({x:gx+gw+20,y:gy+gh+20,w:gw,h:gh,label:'PRODUCTO 4'}));
+    elements.push(makeText('Nombre producto 1',{x:gx,y:gy+gh-30,w:gw,h:30,fontSize:13,fontWeight:'700',color:white,opacity:0.9}));
+    elements.push(makeText('Nombre producto 2',{x:gx+gw+20,y:gy+gh-30,w:gw,h:30,fontSize:13,fontWeight:'700',color:white,opacity:0.9}));
+    elements.push(makeText('Nombre producto 3',{x:gx,y:gy+gh*2+20-30,w:gw,h:30,fontSize:13,fontWeight:'700',color:white,opacity:0.9}));
+    elements.push(makeText('Nombre producto 4',{x:gx+gw+20,y:gy+gh*2+20-30,w:gw,h:30,fontSize:13,fontWeight:'700',color:white,opacity:0.9}));
+    contactBar();
+  } else if(type==='epp_promo'){
+    elements.push(bg('#0d0d1a'));
+    elements.push(makePlaceholder({x:W*0.55,y:H*0.08,w:W*0.4,h:H*0.65,label:'FOTO PRODUCTO'}));
+    elements.push(makeRect({x:0,y:0,w:W*0.08,h:H,color:orange}));
+    elements.push(makeText('🔥',{x:W*0.01,y:H*0.03,w:W*0.06,h:50,fontSize:36}));
+    elements.push(makeText('OFERTA\nESPECIAL',{x:W*0.1,y:H*0.08,w:W*0.4,h:120,fontSize:56,fontWeight:'900',color:white,align:'left',lineHeight:1.05}));
+    elements.push(makeRect({x:W*0.1,y:H*0.35,w:W*0.35,h:80,color:orange,radius:6}));
+    elements.push(makeText('-00%',{x:W*0.1,y:H*0.35+5,w:W*0.35,h:50,fontSize:54,fontWeight:'900',color:white}));
+    elements.push(makeText('DESCUENTO',{x:W*0.1,y:H*0.35+55,w:W*0.35,h:20,fontSize:14,fontWeight:'700',color:'rgba(255,255,255,0.8)',letterSpacing:4}));
+    elements.push(makeText('Nombre del Producto',{x:W*0.1,y:H*0.58,w:W*0.4,h:30,fontSize:22,fontWeight:'700',color:white,align:'left'}));
+    elements.push(makeText('$000',{x:W*0.1,y:H*0.58+32,w:W*0.15,h:30,fontSize:20,fontWeight:'400',color:'#666',align:'left'}));
+    elements.push(makeText('$000',{x:W*0.27,y:H*0.58+32,w:W*0.2,h:30,fontSize:24,fontWeight:'900',color:orange,align:'left'}));
+    elements.push(makeText('Precio anterior          Precio oferta',{x:W*0.1,y:H*0.58+60,w:W*0.4,h:16,fontSize:9,fontWeight:'400',fontFamily:'Barlow',color:'#555',align:'left'}));
+    contactBar();
+  } else if(type==='epp_nuevo'){
+    elements.push(bg(darkBg));
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H,label:'FOTO PRODUCTO NUEVO'}));
+    elements.push(makeRect({x:0,y:0,w:W,h:H,color:dark,opacity:0.5}));
+    elements.push(makeRect({x:0,y:0,w:W,h:5,color:orange}));
+    elements.push(makeRect({x:W*0.05,y:H*0.08,w:180,h:36,color:orange,radius:4}));
+    elements.push(makeText('✨ NUEVO',{x:W*0.05,y:H*0.08+4,w:180,h:28,fontSize:20,fontWeight:'900',color:white}));
+    elements.push(makeText('NOMBRE DEL\nPRODUCTO',{x:W*0.05,y:H*0.22,w:W*0.55,h:140,fontSize:64,fontWeight:'900',color:white,align:'left',lineHeight:1.05}));
+    elements.push(makeText('Descripción breve del producto.\nMaterial, certificaciones, tallas disponibles.',{x:W*0.05,y:H*0.55,w:W*0.5,h:50,fontSize:16,fontWeight:'400',fontFamily:'Barlow',color:'#b0b8c8',align:'left',lineHeight:1.6}));
+    elements.push(makeRect({x:W*0.05,y:H*0.7,w:200,h:50,color:orange,radius:6}));
+    elements.push(makeText('VER EN TIENDA →',{x:W*0.05,y:H*0.7+10,w:200,h:30,fontSize:16,fontWeight:'700',color:white}));
+    brandSupply();
+  } else if(type==='epp_seguridad'){
+    elements.push(bg(darkBg));
+    elements.push(makePlaceholder({x:W*0.6,y:0,w:W*0.4,h:H,label:'FOTO TRABAJADOR CON EPP'}));
+    elements.push(makeRect({x:W*0.55,y:0,w:W*0.45,h:H,color:dark,opacity:0.3}));
+    elements.push(makeRect({x:0,y:0,w:W*0.6,h:H,color:darkBg,opacity:0.95}));
+    elements.push(makeRect({x:0,y:0,w:6,h:H,color:orange}));
+    elements.push(makeText('EQUIPO DE\nPROTECCIÓN\nOBLIGATORIO',{x:W*0.04,y:H*0.05,w:W*0.52,h:150,fontSize:44,fontWeight:'900',color:white,align:'left',lineHeight:1.1}));
+    const items=[['⛑','Casco de seguridad'],['🥽','Lentes de protección'],['🧤','Guantes industriales'],['🦺','Chaleco de alta visibilidad'],['🥾','Botas con casquillo'],['😷','Protección respiratoria']];
+    items.forEach((it,i)=>{const iy=H*0.38+i*52;
+      elements.push(makeRect({x:W*0.04,y:iy,w:W*0.52,h:44,color:dark,opacity:0.5,radius:4}));
+      elements.push(makeText(it[0]+' '+it[1],{x:W*0.06,y:iy+10,w:W*0.48,h:24,fontSize:16,fontWeight:'600',fontFamily:'Barlow',color:white,align:'left'}));
+    });
+    elements.push(makeText('Disponible en MICSA Industrial Supply',{x:W*0.04,y:H-40,w:W*0.52,h:20,fontSize:11,fontWeight:'600',fontFamily:'Barlow',color:orange,align:'left',letterSpacing:1}));
+  } else if(type==='epp_contacto'){
+    elements.push(bg(darkBg));
+    elements.push(makePlaceholder({x:W*0.5,y:0,w:W*0.5,h:H,label:'FOTO TIENDA / EQUIPO'}));
+    elements.push(makeRect({x:W*0.45,y:0,w:W*0.55,h:H,color:dark,opacity:0.4}));
+    elements.push(makeRect({x:0,y:0,w:W*0.55,h:H,color:darkBg,opacity:0.97}));
+    elements.push(makeRect({x:W*0.05,y:H*0.06,w:6,h:H*0.12,color:orange}));
+    elements.push(makeText('MICSA',{x:W*0.08,y:H*0.05,w:W*0.4,h:44,fontSize:34,fontFamily:'Black Ops One',fontWeight:'400',color:white,align:'left',letterSpacing:4}));
+    elements.push(makeText('INDUSTRIAL SUPPLY',{x:W*0.08,y:H*0.05+40,w:W*0.4,h:20,fontSize:14,fontWeight:'700',fontFamily:'Barlow Condensed',color:orange,align:'left',letterSpacing:3}));
+    elements.push(makeText('CONTÁCTANOS',{x:W*0.05,y:H*0.28,w:W*0.45,h:40,fontSize:32,fontWeight:'900',color:white,align:'left'}));
+    const contacts=[['📱 WhatsApp','+52 1 866 176 6621'],['📞 Teléfono','866-176-6621'],['🌐 Tienda en línea','micsa-industrial-supply.myshopify.com'],['📍 Ubicación','Ciudad Frontera, Coahuila']];
+    contacts.forEach((c,i)=>{const cy=H*0.42+i*68;
+      elements.push(makeText(c[0],{x:W*0.05,y:cy,w:W*0.45,h:22,fontSize:14,fontWeight:'700',color:orange,align:'left'}));
+      elements.push(makeText(c[1],{x:W*0.05,y:cy+24,w:W*0.45,h:22,fontSize:16,fontWeight:'400',fontFamily:'Barlow',color:'#c0c8d8',align:'left'}));
+    });
+    elements.push(makeText('Tu socio confiable en equipamiento\nde seguridad industrial',{x:W*0.05,y:H-60,w:W*0.45,h:40,fontSize:12,fontWeight:'400',fontFamily:'Barlow',color:'#667',align:'left',lineHeight:1.5}));
+  } else if(type==='epp_envio'){
+    elements.push(bg(darkBg));
+    elements.push(makePlaceholder({x:0,y:0,w:W,h:H*0.5,label:'FOTO PRODUCTOS / PAQUETES'}));
+    elements.push(makeRect({x:0,y:H*0.42,w:W,h:H*0.58,color:darkBg}));
+    elements.push(makeRect({x:0,y:H*0.42,w:W,h:4,color:orange}));
+    elements.push(makeText('🚚 ENVÍOS A TODO MÉXICO',{x:0,y:H*0.46,w:W,h:40,fontSize:32,fontWeight:'900',color:white}));
+    elements.push(makeText('Recibe tu equipo de protección donde lo necesites',{x:0,y:H*0.46+42,w:W,h:24,fontSize:15,fontWeight:'400',fontFamily:'Barlow',color:'#8090a0'}));
+    const feats=[['📦','Empaque seguro'],['⚡','Envío rápido 2-5 días'],['🔄','Devoluciones fáciles']];
+    feats.forEach((f,i)=>{const fx=W*0.05+i*(W*0.3+10);
+      elements.push(makeRect({x:fx,y:H*0.65,w:W*0.28,h:90,color:dark,opacity:0.6,radius:6,borderColor:orange,borderWidth:1}));
+      elements.push(makeText(f[0],{x:fx,y:H*0.65+10,w:W*0.28,h:30,fontSize:24}));
+      elements.push(makeText(f[1],{x:fx,y:H*0.65+45,w:W*0.28,h:30,fontSize:13,fontWeight:'600',fontFamily:'Barlow',color:white}));
+    });
+    contactBar();
   }
   renderAll();
 }
