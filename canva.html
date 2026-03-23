@@ -138,6 +138,7 @@ select.prop-input{cursor:pointer;}
     <button class="btn-outline" onclick="redoAction()"><span class="mso" style="font-size:16px">redo</span> Rehacer</button>
   </div>
   <div class="top-acts">
+    <button class="btn-outline" style="background:#3fb950;color:#fff;border-color:#3fb950;" onclick="saveDesign()"><span class="mso" style="font-size:16px">favorite</span> Me Gusta</button>
     <button class="btn-outline" onclick="exportCanvas()"><span class="mso" style="font-size:16px">download</span> Descargar</button>
   </div>
 </div>
@@ -169,6 +170,10 @@ select.prop-input{cursor:pointer;}
     </div>
     <div class="ib-item" data-panel="format" onclick="openPanel(this,'format')">
       <span class="mso">crop</span><span>Formato</span>
+    </div>
+    <div class="ib-sep"></div>
+    <div class="ib-item" data-panel="gallery" onclick="openPanel(this,'gallery')">
+      <span class="mso">collections</span><span>Galería</span>
     </div>
   </div>
 
@@ -233,8 +238,8 @@ const TEMPLATES = [
 ];
 
 const BRAND = {
-  colors:['#2874A6','#4A9AD4','#A0AEB8','#06060a','#1a1a2e','#f0f4f8','#E8842C','#c8a84b','#e74c3c','#3fb950','#ffffff','#55667a'],
-  fonts:['Barlow Condensed','Barlow','Black Ops One','Arial','Georgia','Courier New'],
+  colors:['#2874A6','#4A9AD4','#A0AEB8','#06060a','#1a1a2e','#f0f4f8','#E8842C','#f5a623','#c86b1a','#c8a84b','#e74c3c','#3fb950','#ffffff','#55667a','#333333','#8a9faf','#2c2c3e','#d4af37','#1abc9c','#9b59b6','#f39c12','#e67e22','#34495e','#ecf0f1'],
+  fonts:['Barlow Condensed','Barlow','Black Ops One','Arial','Impact','Tahoma','Verdana','Georgia','Courier New','Trebuchet MS'],
 };
 
 // ═══════════════════════════════════════════════════
@@ -503,6 +508,24 @@ function renderDrawer(panel) {
             </div>
           `).join('')}
         </div>
+      </div>`;
+  } else if (panel === 'gallery') {
+    title.textContent = 'Galería';
+    body.innerHTML = `
+      <div class="d-section">
+        <div class="d-label">Diseños guardados (${savedDesigns.length})</div>
+        <button class="el-btn" onclick="loadSavedDesigns()" style="justify-content:center;"><span class="mso" style="font-size:16px">refresh</span> Actualizar</button>
+        ${savedDesigns.map(d => `
+          <div class="photo-thumb" style="margin-bottom:10px;">
+            <img src="${d.image_url}" alt="${d.name}">
+            <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.8);padding:6px 8px;">
+              <div style="font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.name}</div>
+              <div style="font-size:8px;color:#888;">${d.width}×${d.height} · ${new Date(d.created_at).toLocaleDateString('es-MX')}</div>
+            </div>
+            <div class="del" onclick="event.stopPropagation();deleteDesign('${d.id}')">✕</div>
+          </div>
+        `).join('')}
+        ${savedDesigns.length===0?'<p style="font-size:11px;color:var(--mut);text-align:center;margin-top:16px;">Crea un diseño y presiona "Me Gusta" para guardarlo aquí.</p>':''}
       </div>`;
   }
 }
@@ -1003,8 +1026,23 @@ function applyQuickDesign(type) {
 // ═══════════════════════════════════════════════════
 //  BRAND
 // ═══════════════════════════════════════════════════
-function applyBrandColor(c){const el=elements.find(e=>e.id===selectedId);if(!el)return;saveState();el.color=c;renderAll();}
-function applyBrandFont(f){const el=elements.find(e=>e.id===selectedId);if(!el||el.type!=='text')return;saveState();el.fontFamily=f;renderAll();}
+function applyBrandColor(c){
+  const el=elements.find(e=>e.id===selectedId);
+  if(!el){showToast('Selecciona un elemento primero');return;}
+  saveState();el.color=c;renderAll();
+  showToast('Color aplicado: '+c);
+}
+function applyBrandFont(f){
+  const el=elements.find(e=>e.id===selectedId);
+  if(!el||el.type!=='text'){showToast('Selecciona un texto primero');return;}
+  saveState();el.fontFamily=f;renderAll();
+  showToast('Fuente: '+f);
+}
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;font-family:Barlow,sans-serif;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._tid);t._tid=setTimeout(()=>t.style.opacity='0',1500);
+}
 
 // ═══════════════════════════════════════════════════
 //  CANVAS
@@ -1181,12 +1219,68 @@ cv.addEventListener('dblclick',e=>{const{x,y}=canvasCoords(e);const hit=hitTest(
   if(hit&&hit.type==='text'){const t=prompt('Editar texto:',hit.text);if(t!==null){saveState();hit.text=t;renderAll();}}});
 
 // ═══════════════════════════════════════════════════
-//  EXPORT
+//  EXPORT (full quality)
 // ═══════════════════════════════════════════════════
+function getFullQualityBlob(){
+  return new Promise(resolve=>{
+    const prev=selectedId;selectedId=null;renderAll();
+    cv.toBlob(blob=>{selectedId=prev;renderAll();resolve(blob);},'image/png');
+  });
+}
 function exportCanvas(){
   const prev=selectedId;selectedId=null;renderAll();
   const link=document.createElement('a');link.download=`MICSA_${canvasW}x${canvasH}.png`;
   link.href=cv.toDataURL('image/png');link.click();selectedId=prev;renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+//  SUPABASE SAVE
+// ═══════════════════════════════════════════════════
+const SUPABASE_URL='https://gdauwwjuvzuopzqkxnpw.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkYXV3d2p1dnp1b3B6cWt4bnB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgyNzYzODQsImV4cCI6MjA4Mzg1MjM4NH0.UIn_PmEoOYwRaH89pgQxdlNY3yEluyevhdJLSlCKhDE';
+let savedDesigns=[];
+
+async function saveDesign(){
+  showToast('Guardando diseño...');
+  try{
+    const blob=await getFullQualityBlob();
+    const ts=Date.now();
+    const fileName=`design_${ts}.png`;
+    // Upload image to storage
+    const upRes=await fetch(`${SUPABASE_URL}/storage/v1/object/designs/${fileName}`,{
+      method:'POST',headers:{'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'image/png'},body:blob
+    });
+    if(!upRes.ok)throw new Error('Upload failed');
+    const imageUrl=`${SUPABASE_URL}/storage/v1/object/public/designs/${fileName}`;
+    // Save record
+    const name=prompt('Nombre del diseño:','Diseño MICSA')||'Diseño MICSA';
+    const recRes=await fetch(`${SUPABASE_URL}/rest/v1/designs`,{
+      method:'POST',headers:{'Authorization':'Bearer '+SUPABASE_KEY,'apikey':SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+      body:JSON.stringify({name,image_url:imageUrl,width:canvasW,height:canvasH,template_type:currentPanel})
+    });
+    if(!recRes.ok)throw new Error('Save failed');
+    showToast('✓ Diseño guardado');
+    loadSavedDesigns();
+  }catch(err){showToast('Error: '+err.message);console.error(err);}
+}
+
+async function loadSavedDesigns(){
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/designs?order=created_at.desc&limit=50`,{
+      headers:{'Authorization':'Bearer '+SUPABASE_KEY,'apikey':SUPABASE_KEY}
+    });
+    savedDesigns=await res.json();
+    if(currentPanel==='gallery')renderDrawer('gallery');
+  }catch(err){console.error(err);}
+}
+
+async function deleteDesign(id){
+  try{
+    await fetch(`${SUPABASE_URL}/rest/v1/designs?id=eq.${id}`,{
+      method:'DELETE',headers:{'Authorization':'Bearer '+SUPABASE_KEY,'apikey':SUPABASE_KEY}
+    });
+    showToast('Diseño eliminado');loadSavedDesigns();
+  }catch(err){showToast('Error al eliminar');}
 }
 
 // ═══════════════════════════════════════════════════
@@ -1195,6 +1289,7 @@ function exportCanvas(){
 setupCanvas();
 renderDrawer('designs');
 renderAll();
+loadSavedDesigns();
 </script>
 </body>
 </html>
