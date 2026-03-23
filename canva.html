@@ -124,6 +124,39 @@ select.prop-input{cursor:pointer;}
 #zoom-bar{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);border:1px solid var(--border);border-radius:10px;padding:6px 14px;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,.06);}
 #zoom-bar .btn-ghost{padding:4px 8px;font-size:16px;}
 #zoom-val{font-size:11px;color:var(--mut);min-width:40px;text-align:center;font-weight:600;}
+
+/* ── INLINE TEXT EDITOR ── */
+#text-editor{position:absolute;z-index:200;display:none;pointer-events:auto;}
+#text-editor .te-input{background:transparent;border:2px solid var(--acc);outline:none;padding:2px 4px;white-space:pre-wrap;word-break:break-word;overflow:hidden;min-width:40px;min-height:20px;caret-color:var(--acc);}
+
+/* ── CONTEXT MENU ── */
+#ctx-menu{position:fixed;z-index:300;display:none;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);padding:6px 0;min-width:180px;font-family:'Barlow',sans-serif;}
+#ctx-menu .cm-item{padding:8px 16px;font-size:12px;font-weight:500;color:var(--txt);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .1s;}
+#ctx-menu .cm-item:hover{background:var(--acc-light);color:var(--acc);}
+#ctx-menu .cm-item .mso{font-size:16px;color:var(--mut);}
+#ctx-menu .cm-item:hover .mso{color:var(--acc);}
+#ctx-menu .cm-sep{height:1px;background:var(--border);margin:4px 0;}
+
+/* ── SNAP GUIDES ── */
+.snap-guide{position:absolute;z-index:150;pointer-events:none;}
+.snap-guide-h{left:0;right:0;height:1px;background:cyan;opacity:.7;}
+.snap-guide-v{top:0;bottom:0;width:1px;background:cyan;opacity:.7;}
+
+/* ── CANVAS PANNING ── */
+#canvas-area.panning,#canvas-area.panning *{cursor:grab!important;}
+#canvas-area.panning-active,#canvas-area.panning-active *{cursor:grabbing!important;}
+
+/* ── EXPORT DROPDOWN ── */
+.export-dropdown{position:relative;display:inline-block;}
+.export-menu{display:none;position:absolute;top:100%;right:0;background:#fff;border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:200;min-width:150px;padding:4px 0;margin-top:4px;}
+.export-menu.show{display:block;}
+.export-menu-item{padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--txt);font-family:'Barlow',sans-serif;transition:background .1s;}
+.export-menu-item:hover{background:var(--acc-light);color:var(--acc);}
+
+/* ── ALIGNMENT BUTTONS ── */
+.align-bar{display:flex;gap:4px;flex-wrap:wrap;}
+.align-btn{width:34px;height:30px;display:flex;align-items:center;justify-content:center;background:var(--in);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:14px;color:var(--mut);transition:all .12s;}
+.align-btn:hover{border-color:var(--acc);color:var(--acc);background:var(--acc-light);}
 </style>
 </head>
 <body>
@@ -139,7 +172,13 @@ select.prop-input{cursor:pointer;}
   </div>
   <div class="top-acts">
     <button class="btn-outline" style="background:#3fb950;color:#fff;border-color:#3fb950;" onclick="saveDesign()"><span class="mso" style="font-size:16px">favorite</span> Me Gusta</button>
-    <button class="btn-outline" onclick="exportCanvas()"><span class="mso" style="font-size:16px">download</span> Descargar</button>
+    <div class="export-dropdown">
+      <button class="btn-outline" onclick="toggleExportMenu(event)"><span class="mso" style="font-size:16px">download</span> Descargar ▾</button>
+      <div class="export-menu" id="export-menu">
+        <div class="export-menu-item" onclick="exportCanvas('png')"><span class="mso" style="font-size:16px">image</span> PNG (sin fondo transparente)</div>
+        <div class="export-menu-item" onclick="exportCanvas('jpg')"><span class="mso" style="font-size:16px">photo</span> JPG (más ligero)</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -367,7 +406,11 @@ function renderDrawer(panel) {
       <div class="d-section">
         <div class="d-label">Formas</div>
         <div class="el-btn" onclick="addRect()"><div class="el-icon">◻</div> Rectángulo</div>
+        <div class="el-btn" onclick="addCircle()"><div class="el-icon">●</div> Círculo</div>
+        <div class="el-btn" onclick="addTriangle()"><div class="el-icon">▲</div> Triángulo</div>
         <div class="el-btn" onclick="addLine()"><div class="el-icon">─</div> Línea</div>
+        <div class="el-btn" onclick="addArrow()"><div class="el-icon">→</div> Flecha</div>
+        <div class="el-btn" onclick="addGradientRect()"><div class="el-icon" style="background:linear-gradient(135deg,#2874A6,#4A9AD4);border:none;color:#fff;">◆</div> Degradado</div>
         <div class="el-btn" onclick="addAccentBar()"><div class="el-icon">▐</div> Barra de acento</div>
         <div class="el-btn" onclick="addOverlay()"><div class="el-icon">▓</div> Overlay oscuro</div>
       </div>
@@ -409,7 +452,7 @@ function renderDrawer(panel) {
       </div>`;
   } else if (panel === 'layers') {
     title.textContent = 'Capas';
-    const icons = { rect:'◻', text:'T', image:'🖼', line:'─', placeholder:'📷' };
+    const icons = { rect:'◻', text:'T', image:'🖼', line:'─', placeholder:'📷', triangle:'▲', arrow:'→', gradient:'◆' };
     const nameOf = (el) => {
       if (el.type==='text') return el.text.substring(0,22)+(el.text.length>22?'…':'');
       if (el.type==='image') return 'Imagen';
@@ -422,6 +465,9 @@ function renderDrawer(panel) {
         return 'Rectángulo';
       }
       if (el.type==='line') return 'Línea';
+      if (el.type==='triangle') return 'Triángulo';
+      if (el.type==='arrow') return 'Flecha';
+      if (el.type==='gradient') return 'Degradado';
       return el.type;
     };
     const rev = [...elements].reverse();
@@ -1078,6 +1124,23 @@ function renderElement(el){
       else{sh=iw/ear;sy=(ih-sh)/2;}
       ctx.drawImage(el.img,sx,sy,sw,sh,el.x,el.y,el.w,el.h);
     }
+  } else if(el.type==='triangle'){
+    ctx.fillStyle=el.color;ctx.beginPath();
+    ctx.moveTo(el.x+el.w/2,el.y);ctx.lineTo(el.x+el.w,el.y+el.h);ctx.lineTo(el.x,el.y+el.h);
+    ctx.closePath();ctx.fill();
+  } else if(el.type==='arrow'){
+    ctx.fillStyle=el.color;const ax=el.x,ay=el.y,aw=el.w,ah=el.h;
+    ctx.beginPath();
+    ctx.moveTo(ax,ay+ah*0.25);ctx.lineTo(ax+aw*0.65,ay+ah*0.25);
+    ctx.lineTo(ax+aw*0.65,ay);ctx.lineTo(ax+aw,ay+ah*0.5);
+    ctx.lineTo(ax+aw*0.65,ay+ah);ctx.lineTo(ax+aw*0.65,ay+ah*0.75);
+    ctx.lineTo(ax,ay+ah*0.75);ctx.closePath();ctx.fill();
+  } else if(el.type==='gradient'){
+    const grd=ctx.createLinearGradient(el.x,el.y,el.x+el.w,el.y+el.h);
+    grd.addColorStop(0,el.color);grd.addColorStop(1,el.color2||'#4A9AD4');
+    ctx.fillStyle=grd;
+    if(el.radius>0){ctx.beginPath();ctx.roundRect(el.x,el.y,el.w,el.h,el.radius);ctx.fill();}
+    else ctx.fillRect(el.x,el.y,el.w,el.h);
   } else if(el.type==='text'){
     ctx.fillStyle=el.color;ctx.font=`${el.fontWeight} ${el.fontSize}px '${el.fontFamily}'`;
     ctx.textAlign=el.align||'center';ctx.letterSpacing=(el.letterSpacing||0)+'px';
@@ -1092,7 +1155,8 @@ function drawSelection(el){
   ctx.save();ctx.strokeStyle='#b8952e';ctx.lineWidth=2/zoom;ctx.setLineDash([6/zoom,4/zoom]);
   ctx.strokeRect(el.x-2,el.y-2,el.w+4,el.h+4);ctx.setLineDash([]);
   const hs=8/zoom;ctx.fillStyle='#b8952e';ctx.strokeStyle='#fff';ctx.lineWidth=1.5/zoom;
-  [[el.x+el.w,el.y+el.h]].forEach(([hx,hy])=>{ctx.fillRect(hx-hs/2,hy-hs/2,hs,hs);ctx.strokeRect(hx-hs/2,hy-hs/2,hs,hs);});
+  const handles=[[el.x,el.y],[el.x+el.w,el.y],[el.x,el.y+el.h],[el.x+el.w,el.y+el.h]];
+  handles.forEach(([hx,hy])=>{ctx.fillRect(hx-hs/2,hy-hs/2,hs,hs);ctx.strokeRect(hx-hs/2,hy-hs/2,hs,hs);});
   ctx.restore();
 }
 
@@ -1101,25 +1165,58 @@ function drawSelection(el){
 // ═══════════════════════════════════════════════════
 function canvasCoords(e){const r=cv.getBoundingClientRect();return{x:(e.clientX-r.left)/zoom,y:(e.clientY-r.top)/zoom};}
 function hitTest(mx,my){for(let i=elements.length-1;i>=0;i--){const el=elements[i];if(mx>=el.x&&mx<=el.x+el.w&&my>=el.y&&my<=el.y+el.h)return el;}return null;}
-function isOnHandle(el,mx,my){const hs=12/zoom;return Math.abs(mx-(el.x+el.w))<hs&&Math.abs(my-(el.y+el.h))<hs;}
+function isOnHandle(el,mx,my){
+  const hs=12/zoom;
+  if(Math.abs(mx-el.x)<hs&&Math.abs(my-el.y)<hs) return 'tl';
+  if(Math.abs(mx-(el.x+el.w))<hs&&Math.abs(my-el.y)<hs) return 'tr';
+  if(Math.abs(mx-el.x)<hs&&Math.abs(my-(el.y+el.h))<hs) return 'bl';
+  if(Math.abs(mx-(el.x+el.w))<hs&&Math.abs(my-(el.y+el.h))<hs) return 'br';
+  return null;
+}
 
 function canvasMouseDown(e){
   if(e.target!==cv)return;
+  if(spaceHeld){panStart={mx:e.clientX,my:e.clientY,sl:document.getElementById('canvas-area').scrollLeft,st:document.getElementById('canvas-area').scrollTop};document.getElementById('canvas-area').classList.add('panning-active');return;}
   const{x,y}=canvasCoords(e);
   const sel=elements.find(el=>el.id===selectedId);
-  if(sel&&isOnHandle(sel,x,y)){saveState();resizing={id:sel.id,startX:x,startY:y,startW:sel.w,startH:sel.h};return;}
+  if(sel){
+    const handle=isOnHandle(sel,x,y);
+    if(handle){saveState();resizing={id:sel.id,handle,startX:x,startY:y,startW:sel.w,startH:sel.h,startElX:sel.x,startElY:sel.y};return;}
+  }
   const hit=hitTest(x,y);
   if(hit){selectedId=hit.id;dragging={id:hit.id,offX:x-hit.x,offY:y-hit.y};renderAll();}
   else{selectedId=null;renderAll();}
 }
 function canvasMouseMove(e){
+  if(spaceHeld&&panStart){const ca=document.getElementById('canvas-area');ca.scrollLeft=panStart.sl-(e.clientX-panStart.mx);ca.scrollTop=panStart.st-(e.clientY-panStart.my);return;}
   const{x,y}=canvasCoords(e);
-  if(dragging){const el=elements.find(e=>e.id===dragging.id);if(el){el.x=Math.round(x-dragging.offX);el.y=Math.round(y-dragging.offY);renderAll();}}
-  else if(resizing){const el=elements.find(e=>e.id===resizing.id);if(el){el.w=Math.max(20,Math.round(resizing.startW+(x-resizing.startX)));el.h=Math.max(10,Math.round(resizing.startH+(y-resizing.startY)));renderAll();}}
-  else{const sel=elements.find(el=>el.id===selectedId);
-    if(sel&&isOnHandle(sel,x,y))cv.style.cursor='nwse-resize';else if(hitTest(x,y))cv.style.cursor='move';else cv.style.cursor='default';}
+  if(dragging){
+    const el=elements.find(e=>e.id===dragging.id);
+    if(el){
+      el.x=Math.round(x-dragging.offX);el.y=Math.round(y-dragging.offY);
+      showSnapGuides(el);
+      renderAll();
+    }
+  } else if(resizing){
+    const el=elements.find(e=>e.id===resizing.id);
+    if(el){
+      const dx=x-resizing.startX, dy=y-resizing.startY, h=resizing.handle;
+      if(h==='br'){el.w=Math.max(20,Math.round(resizing.startW+dx));el.h=Math.max(10,Math.round(resizing.startH+dy));}
+      else if(h==='tl'){el.w=Math.max(20,Math.round(resizing.startW-dx));el.h=Math.max(10,Math.round(resizing.startH-dy));el.x=Math.round(resizing.startElX+dx);el.y=Math.round(resizing.startElY+dy);}
+      else if(h==='tr'){el.w=Math.max(20,Math.round(resizing.startW+dx));el.h=Math.max(10,Math.round(resizing.startH-dy));el.y=Math.round(resizing.startElY+dy);}
+      else if(h==='bl'){el.w=Math.max(20,Math.round(resizing.startW-dx));el.h=Math.max(10,Math.round(resizing.startH+dy));el.x=Math.round(resizing.startElX+dx);}
+      renderAll();
+    }
+  } else {
+    const sel=elements.find(el=>el.id===selectedId);
+    const handle=sel?isOnHandle(sel,x,y):null;
+    if(handle==='tl'||handle==='br') cv.style.cursor='nwse-resize';
+    else if(handle==='tr'||handle==='bl') cv.style.cursor='nesw-resize';
+    else if(hitTest(x,y)) cv.style.cursor='move';
+    else cv.style.cursor='default';
+  }
 }
-function canvasMouseUp(){if(dragging)saveState();dragging=null;resizing=null;}
+function canvasMouseUp(){if(dragging)saveState();dragging=null;resizing=null;panStart=null;document.getElementById('canvas-area').classList.remove('panning-active');hideSnapGuides();}
 
 // ═══════════════════════════════════════════════════
 //  PROPERTIES
@@ -1150,6 +1247,14 @@ function renderProps(){
         <option value="right" ${el.align==='right'?'selected':''}>Derecha</option></select></div>
       <div class="prop-row"><label>Color</label><input type="color" class="prop-color" value="${el.color}" onchange="setProp(${el.id},'color',this.value)"></div>
       <div class="prop-row"><label>Esp.</label><input class="prop-input prop-input-sm" type="number" value="${el.letterSpacing||0}" onchange="setProp(${el.id},'letterSpacing',+this.value)"></div></div>`;
+  } else if(el.type==='gradient'){
+    h+=`<div class="prop-section"><div class="prop-label">Degradado</div>
+      <div class="prop-row"><label>Color 1</label><input type="color" class="prop-color" value="${el.color}" onchange="setProp(${el.id},'color',this.value)"></div>
+      <div class="prop-row"><label>Color 2</label><input type="color" class="prop-color" value="${el.color2||'#4A9AD4'}" onchange="setProp(${el.id},'color2',this.value)"></div>
+      <div class="prop-row"><label>Radio</label><input class="prop-input prop-input-sm" type="number" value="${el.radius||0}" onchange="setProp(${el.id},'radius',+this.value)"></div></div>`;
+  } else if(el.type==='triangle'||el.type==='arrow'){
+    h+=`<div class="prop-section"><div class="prop-label">Estilo</div>
+      <div class="prop-row"><label>Color</label><input type="color" class="prop-color" value="${el.color}" onchange="setProp(${el.id},'color',this.value)"></div></div>`;
   } else if(el.type==='rect'||el.type==='line'){
     h+=`<div class="prop-section"><div class="prop-label">Estilo</div>
       <div class="prop-row"><label>Color</label><input type="color" class="prop-color" value="${el.color}" onchange="setProp(${el.id},'color',this.value)"></div>
@@ -1163,6 +1268,15 @@ function renderProps(){
     h+=`<div class="prop-section"><div class="prop-label">Placeholder</div>
       <p style="font-size:11px;color:var(--mut);line-height:1.5;">Sube una foto en <b>Subidos</b> para reemplazar este placeholder.</p></div>`;
   }
+  h+=`<div class="prop-section"><div class="prop-label">Alineación</div>
+    <div class="align-bar">
+      <div class="align-btn" title="Izquierda" onclick="alignEl(${el.id},'left')"><span class="mso" style="font-size:16px">align_horizontal_left</span></div>
+      <div class="align-btn" title="Centro H" onclick="alignEl(${el.id},'centerH')"><span class="mso" style="font-size:16px">align_horizontal_center</span></div>
+      <div class="align-btn" title="Derecha" onclick="alignEl(${el.id},'right')"><span class="mso" style="font-size:16px">align_horizontal_right</span></div>
+      <div class="align-btn" title="Arriba" onclick="alignEl(${el.id},'top')"><span class="mso" style="font-size:16px">align_vertical_top</span></div>
+      <div class="align-btn" title="Centro V" onclick="alignEl(${el.id},'centerV')"><span class="mso" style="font-size:16px">align_vertical_center</span></div>
+      <div class="align-btn" title="Abajo" onclick="alignEl(${el.id},'bottom')"><span class="mso" style="font-size:16px">align_vertical_bottom</span></div>
+    </div></div>`;
   h+=`<div class="prop-section"><div class="prop-label">Capa</div>
     <div style="display:flex;gap:4px;">
       <button class="btn-outline" style="flex:1;padding:6px;" onclick="moveLayer(${el.id},-1)">↓ Atrás</button>
@@ -1176,25 +1290,193 @@ function setProp(id,key,val){const el=elements.find(e=>e.id===id);if(!el)return;
 function moveLayer(id,dir){const idx=elements.findIndex(e=>e.id===id);const ni=idx+dir;if(ni<0||ni>=elements.length)return;saveState();[elements[idx],elements[ni]]=[elements[ni],elements[idx]];renderAll();}
 function duplicateEl(id){const el=elements.find(e=>e.id===id);if(!el)return;saveState();const c={...el,id:nextId++,x:el.x+20,y:el.y+20};elements.push(c);selectedId=c.id;renderAll();}
 function deleteEl(id){saveState();elements=elements.filter(e=>e.id!==id);selectedId=null;renderAll();}
+function alignEl(id,dir){
+  const el=elements.find(e=>e.id===id);if(!el)return;saveState();
+  if(dir==='left') el.x=0;
+  else if(dir==='centerH') el.x=canvasW/2-el.w/2;
+  else if(dir==='right') el.x=canvasW-el.w;
+  else if(dir==='top') el.y=0;
+  else if(dir==='centerV') el.y=canvasH/2-el.h/2;
+  else if(dir==='bottom') el.y=canvasH-el.h;
+  renderAll();
+}
 
 // ═══════════════════════════════════════════════════
 //  KEYBOARD
 // ═══════════════════════════════════════════════════
 document.addEventListener('keydown',e=>{
-  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return;
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT'||e.target.isContentEditable)return;
   const el=elements.find(el=>el.id===selectedId);
   if((e.key==='Delete'||e.key==='Backspace')&&el){deleteEl(el.id);e.preventDefault();}
   if(e.key==='Escape'){selectedId=null;renderAll();}
   if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undoAction();}
   if((e.ctrlKey||e.metaKey)&&e.key==='y'){e.preventDefault();redoAction();}
   if((e.ctrlKey||e.metaKey)&&e.key==='d'){e.preventDefault();if(el)duplicateEl(el.id);}
+  if((e.ctrlKey||e.metaKey)&&e.key==='c'&&el){clipboard=JSON.parse(JSON.stringify(el));if(clipboard.img)delete clipboard.img;showToast('Copiado');}
+  if((e.ctrlKey||e.metaKey)&&e.key==='v'&&clipboard){saveState();const c={...clipboard,id:nextId++,x:clipboard.x+30,y:clipboard.y+30};if(clipboard._hasImg){const p=uploadedPhotos.find(p=>p.url===c.url);if(p)c.img=p.img;}elements.push(c);selectedId=c.id;clipboard={...clipboard,x:c.x,y:c.y};renderAll();showToast('Pegado');}
   if(el&&['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
     e.preventDefault();const s=e.shiftKey?10:1;saveState();
     if(e.key==='ArrowUp')el.y-=s;if(e.key==='ArrowDown')el.y+=s;
     if(e.key==='ArrowLeft')el.x-=s;if(e.key==='ArrowRight')el.x+=s;renderAll();}
 });
-cv.addEventListener('dblclick',e=>{const{x,y}=canvasCoords(e);const hit=hitTest(x,y);
-  if(hit&&hit.type==='text'){const t=prompt('Editar texto:',hit.text);if(t!==null){saveState();hit.text=t;renderAll();}}});
+cv.addEventListener('dblclick',e=>{
+  const{x,y}=canvasCoords(e);const hit=hitTest(x,y);
+  if(hit&&hit.type==='text') openInlineEditor(hit);
+});
+
+function openInlineEditor(el){
+  const te=document.getElementById('text-editor');
+  const inp=te.querySelector('.te-input');
+  const rect=cv.getBoundingClientRect();
+  te.style.display='block';
+  te.style.left=(rect.left+el.x*zoom)+'px';
+  te.style.top=(rect.top+el.y*zoom)+'px';
+  inp.style.width=(el.w*zoom)+'px';
+  inp.style.minHeight=(el.h*zoom)+'px';
+  inp.style.fontSize=(el.fontSize*zoom)+'px';
+  inp.style.fontFamily="'"+el.fontFamily+"'";
+  inp.style.fontWeight=el.fontWeight;
+  inp.style.color=el.color;
+  inp.style.textAlign=el.align||'center';
+  inp.style.letterSpacing=(el.letterSpacing||0)*zoom+'px';
+  inp.style.lineHeight=el.lineHeight||1.2;
+  inp.innerText=el.text;
+  inp.focus();
+  // Select all text
+  const range=document.createRange();range.selectNodeContents(inp);
+  const sel2=window.getSelection();sel2.removeAllRanges();sel2.addRange(range);
+  const save=()=>{
+    const newText=inp.innerText.replace(/\n$/,'');
+    if(newText!==el.text){saveState();el.text=newText;renderAll();}
+    te.style.display='none';
+    inp.removeEventListener('blur',onBlur);
+    inp.removeEventListener('keydown',onKey);
+  };
+  const onBlur=()=>save();
+  const onKey=(ev)=>{
+    if(ev.key==='Escape'){ev.preventDefault();te.style.display='none';inp.removeEventListener('blur',onBlur);inp.removeEventListener('keydown',onKey);}
+    if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();save();}
+  };
+  inp.addEventListener('blur',onBlur);
+  inp.addEventListener('keydown',onKey);
+}
+
+// ═══════════════════════════════════════════════════
+//  CLIPBOARD (Copy/Paste)
+// ═══════════════════════════════════════════════════
+let clipboard = null;
+
+// ═══════════════════════════════════════════════════
+//  SPACE + DRAG PANNING
+// ═══════════════════════════════════════════════════
+let spaceHeld = false;
+let panStart = null;
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.target.closest('input,textarea,select,[contenteditable]')){e.preventDefault();spaceHeld=true;document.getElementById('canvas-area').classList.add('panning');}});
+document.addEventListener('keyup',e=>{if(e.code==='Space'){spaceHeld=false;document.getElementById('canvas-area').classList.remove('panning','panning-active');panStart=null;}});
+
+// ═══════════════════════════════════════════════════
+//  SCROLL WHEEL ZOOM
+// ═══════════════════════════════════════════════════
+document.getElementById('canvas-area').addEventListener('wheel', e => {
+  e.preventDefault();
+  zoomBy(e.deltaY > 0 ? -0.05 : 0.05);
+}, {passive: false});
+
+// ═══════════════════════════════════════════════════
+//  CONTEXT MENU
+// ═══════════════════════════════════════════════════
+cv.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  const {x,y} = canvasCoords(e);
+  const hit = hitTest(x,y);
+  if(hit) { selectedId = hit.id; renderAll(); }
+  showContextMenu(e.clientX, e.clientY);
+});
+function showContextMenu(cx,cy){
+  const m=document.getElementById('ctx-menu');
+  m.style.display='block';m.style.left=cx+'px';m.style.top=cy+'px';
+  // keep on screen
+  const rect=m.getBoundingClientRect();
+  if(rect.right>window.innerWidth) m.style.left=(cx-rect.width)+'px';
+  if(rect.bottom>window.innerHeight) m.style.top=(cy-rect.height)+'px';
+}
+function hideContextMenu(){document.getElementById('ctx-menu').style.display='none';}
+document.addEventListener('click',()=>hideContextMenu());
+document.addEventListener('contextmenu',e=>{if(!e.target.closest('#ctx-menu'))hideContextMenu();});
+
+function ctxCopy(){const el=elements.find(e=>e.id===selectedId);if(!el)return;clipboard=JSON.parse(JSON.stringify(el));if(clipboard.img)delete clipboard.img;showToast('Copiado');}
+function ctxPaste(){
+  if(!clipboard){showToast('Nada en portapapeles');return;}
+  saveState();const c={...clipboard,id:nextId++,x:clipboard.x+30,y:clipboard.y+30};
+  if(clipboard._hasImg){const p=uploadedPhotos.find(p=>p.url===c.url);if(p)c.img=p.img;}
+  elements.push(c);selectedId=c.id;clipboard={...clipboard,x:c.x,y:c.y};renderAll();showToast('Pegado');
+}
+function ctxDuplicate(){const el=elements.find(e=>e.id===selectedId);if(el)duplicateEl(el.id);}
+function ctxDelete(){const el=elements.find(e=>e.id===selectedId);if(el)deleteEl(el.id);}
+function ctxBringFront(){const el=elements.find(e=>e.id===selectedId);if(!el)return;saveState();elements=elements.filter(e=>e.id!==el.id);elements.push(el);renderAll();}
+function ctxSendBack(){const el=elements.find(e=>e.id===selectedId);if(!el)return;saveState();elements=elements.filter(e=>e.id!==el.id);elements.unshift(el);renderAll();}
+
+// ═══════════════════════════════════════════════════
+//  SNAP GUIDES
+// ═══════════════════════════════════════════════════
+function showSnapGuides(el){
+  hideSnapGuides();
+  const wrap=document.getElementById('canvas-wrap');
+  const cx=el.x+el.w/2, cy=el.y+el.h/2;
+  const thresh=6;
+  if(Math.abs(cx-canvasW/2)<thresh){
+    el.x=canvasW/2-el.w/2;
+    const g=document.createElement('div');g.className='snap-guide snap-guide-v';
+    g.style.left=(canvasW/2*zoom)+'px';g.style.top='0';g.style.height='100%';
+    wrap.appendChild(g);
+  }
+  if(Math.abs(cy-canvasH/2)<thresh){
+    el.y=canvasH/2-el.h/2;
+    const g=document.createElement('div');g.className='snap-guide snap-guide-h';
+    g.style.top=(canvasH/2*zoom)+'px';g.style.left='0';g.style.width='100%';
+    wrap.appendChild(g);
+  }
+}
+function hideSnapGuides(){document.querySelectorAll('.snap-guide').forEach(g=>g.remove());}
+
+// ═══════════════════════════════════════════════════
+//  EXPORT DROPDOWN
+// ═══════════════════════════════════════════════════
+function toggleExportMenu(e){
+  e.stopPropagation();
+  document.getElementById('export-menu').classList.toggle('show');
+}
+document.addEventListener('click',()=>{const m=document.getElementById('export-menu');if(m)m.classList.remove('show');});
+
+// ═══════════════════════════════════════════════════
+//  EXTRA SHAPE FACTORIES
+// ═══════════════════════════════════════════════════
+function makeCircle(o={}){
+  const s=o.s||150;
+  return {id:nextId++,type:'rect',x:o.x??canvasW/2-s/2,y:o.y??canvasH/2-s/2,w:s,h:s,
+    color:o.color??'#2874A6',opacity:o.opacity??1,radius:s/2,
+    borderColor:'none',borderWidth:0,locked:false};
+}
+function addCircle(){saveState();elements.push(makeCircle());selectedId=elements[elements.length-1].id;renderAll();}
+function addTriangle(){
+  saveState();
+  // Triangle is a text-based visual hint; uses a rect with special rendering
+  elements.push({id:nextId++,type:'triangle',x:canvasW/2-75,y:canvasH/2-65,w:150,h:130,
+    color:'#2874A6',opacity:1,locked:false});
+  selectedId=elements[elements.length-1].id;renderAll();
+}
+function addArrow(){
+  saveState();
+  elements.push({id:nextId++,type:'arrow',x:canvasW/2-100,y:canvasH/2-20,w:200,h:40,
+    color:'#2874A6',opacity:1,locked:false});
+  selectedId=elements[elements.length-1].id;renderAll();
+}
+function addGradientRect(){
+  saveState();
+  elements.push({id:nextId++,type:'gradient',x:canvasW/2-100,y:canvasH/2-50,w:200,h:100,
+    color:'#2874A6',color2:'#4A9AD4',opacity:1,radius:0,locked:false});
+  selectedId=elements[elements.length-1].id;renderAll();
+}
 
 // ═══════════════════════════════════════════════════
 //  EXPORT (full quality)
@@ -1205,10 +1487,13 @@ function getFullQualityBlob(){
     cv.toBlob(blob=>{selectedId=prev;renderAll();resolve(blob);},'image/png');
   });
 }
-function exportCanvas(){
+function exportCanvas(fmt='png'){
   const prev=selectedId;selectedId=null;renderAll();
-  const link=document.createElement('a');link.download=`MICSA_${canvasW}x${canvasH}.png`;
-  link.href=cv.toDataURL('image/png');link.click();selectedId=prev;renderAll();
+  const mime=fmt==='jpg'?'image/jpeg':'image/png';
+  const ext=fmt==='jpg'?'jpg':'png';
+  const link=document.createElement('a');link.download=`MICSA_${canvasW}x${canvasH}.${ext}`;
+  link.href=cv.toDataURL(mime,0.95);link.click();selectedId=prev;renderAll();
+  document.getElementById('export-menu').classList.remove('show');
 }
 
 // ═══════════════════════════════════════════════════
@@ -1269,5 +1554,22 @@ renderDrawer('designs');
 renderAll();
 loadSavedDesigns();
 </script>
+
+<!-- Context Menu -->
+<div id="ctx-menu">
+  <div class="cm-item" onclick="ctxCopy()"><span class="mso">content_copy</span> Copiar</div>
+  <div class="cm-item" onclick="ctxPaste()"><span class="mso">content_paste</span> Pegar</div>
+  <div class="cm-item" onclick="ctxDuplicate()"><span class="mso">copy_all</span> Duplicar</div>
+  <div class="cm-item" onclick="ctxDelete()"><span class="mso">delete</span> Eliminar</div>
+  <div class="cm-sep"></div>
+  <div class="cm-item" onclick="ctxBringFront()"><span class="mso">flip_to_front</span> Traer al frente</div>
+  <div class="cm-item" onclick="ctxSendBack()"><span class="mso">flip_to_back</span> Enviar atrás</div>
+</div>
+
+<!-- Inline Text Editor -->
+<div id="text-editor">
+  <div class="te-input" contenteditable="true"></div>
+</div>
+
 </body>
 </html>
