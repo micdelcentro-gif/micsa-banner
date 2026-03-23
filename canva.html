@@ -161,6 +161,9 @@ select.prop-input{cursor:pointer;}
     <div class="ib-item" data-panel="layers" onclick="openPanel(this,'layers')">
       <span class="mso">layers</span><span>Capas</span>
     </div>
+    <div class="ib-item" data-panel="logo" onclick="openPanel(this,'logo')">
+      <span class="mso">add_photo_alternate</span><span>Logo</span>
+    </div>
     <div class="ib-item" data-panel="brand" onclick="openPanel(this,'brand')">
       <span class="mso">palette</span><span>Marca</span>
     </div>
@@ -208,6 +211,7 @@ let elements = [];
 let selectedId = null;
 let dragging = null, resizing = null;
 let uploadedPhotos = [];
+let savedLogos = [];
 let undoStack = [], redoStack = [];
 let nextId = 1;
 let canvasBg = '#06060a';
@@ -435,16 +439,45 @@ function renderDrawer(panel) {
         `).join('')}
         ${elements.length===0?'<p style="font-size:11px;color:var(--mut);text-align:center;margin-top:16px;">Vacío. Selecciona un diseño para empezar.</p>':''}
       </div>`;
-  } else if (panel === 'brand') {
-    title.textContent = 'Marca';
+  } else if (panel === 'logo') {
+    title.textContent = 'Logo';
     body.innerHTML = `
       <div class="d-section">
-        <div class="d-label">Colores de marca</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;">
-          ${BRAND.colors.map(c => `<div style="width:36px;height:36px;background:${c};border:1px solid var(--border);border-radius:8px;cursor:pointer;" title="${c}" onclick="applyBrandColor('${c}')"></div>`).join('')}
+        <div class="d-label">Subir Logo</div>
+        <div class="upload-zone">
+          <div class="uz-icon"><span class="mso" style="font-size:32px">add_photo_alternate</span></div>
+          <div class="uz-text">Sube tu logo (PNG transparente)</div>
+          <input type="file" accept="image/*" onchange="handleLogoUpload(this)">
         </div>
+        <p style="font-size:10px;color:var(--mut);line-height:1.5;margin-bottom:10px;">El logo se agrega como imagen encima de todo. Usa PNG con fondo transparente para mejores resultados.</p>
       </div>
       <div class="d-section">
+        <div class="d-label">Logos guardados</div>
+        ${savedLogos.map(l => `
+          <div class="photo-thumb" onclick="addLogoToCanvas('${l.id}')">
+            <img src="${l.url}" alt="${l.name}" style="object-fit:contain;background:#222;">
+            <div class="del" onclick="event.stopPropagation();removeLogo('${l.id}')">✕</div>
+          </div>
+        `).join('')}
+        ${savedLogos.length===0?'<p style="font-size:11px;color:var(--mut);text-align:center;">Sube tu logo para usarlo en todos los diseños</p>':'<p style="font-size:10px;color:var(--acc);text-align:center;margin-top:6px;">Clic en un logo para agregarlo al canvas</p>'}
+      </div>`;
+  } else if (panel === 'brand') {
+    title.textContent = 'Marca';
+    const brandGroups = [
+      { label:'GRUPO MICSA', colors:['#2874A6','#4A9AD4','#A0AEB8','#06060a','#1a1a2e','#f0f4f8'] },
+      { label:'MICSA SUPPLY', colors:['#E8842C','#f5a623','#c86b1a','#1a1a2e','#2c2c3e','#ffffff'] },
+      { label:'ACENTOS', colors:['#c8a84b','#e74c3c','#3fb950','#55667a','#8a9faf','#333333'] },
+    ];
+    body.innerHTML = `
+      ${brandGroups.map(g => `
+        <div class="d-section">
+          <div class="d-label">${g.label}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;">
+            ${g.colors.map(c => `<div style="width:36px;height:36px;background:${c};border:2px solid ${c==='#ffffff'?'#ddd':'transparent'};border-radius:8px;cursor:pointer;position:relative;" title="${c}" onclick="applyBrandColor('${c}')"><span style="position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--mut);white-space:nowrap;">${c}</span></div>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+      <div class="d-section" style="margin-top:10px;">
         <div class="d-label">Fondo del canvas</div>
         <div class="prop-row">
           <label>Color</label>
@@ -517,8 +550,13 @@ function handlePhotoUpload(input) {
       const id = 'ph_' + nextId++;
       uploadedPhotos.push({ id, img, name: file.name, url });
       renderDrawer('photos');
+      // Auto-fill first available placeholder
       const firstPh = elements.find(e => e.type === 'placeholder');
-      if (firstPh) { saveState(); replacePlaceholder(firstPh, { img, url }); }
+      if (firstPh) {
+        saveState();
+        replacePlaceholder(firstPh, { img, url });
+        renderAll();
+      }
     };
     img.src = url;
   });
@@ -547,6 +585,39 @@ function replacePlaceholder(placeholder, photo) {
 function removePhoto(photoId) {
   uploadedPhotos = uploadedPhotos.filter(p => p.id !== photoId);
   renderDrawer('photos');
+}
+
+// ═══════════════════════════════════════════════════
+//  LOGO
+// ═══════════════════════════════════════════════════
+function handleLogoUpload(input) {
+  Array.from(input.files).forEach(file => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const id = 'logo_' + nextId++;
+      savedLogos.push({ id, img, name: file.name, url });
+      renderDrawer('logo');
+      addLogoToCanvas(id);
+    };
+    img.src = url;
+  });
+}
+function addLogoToCanvas(logoId) {
+  const logo = savedLogos.find(l => l.id === logoId);
+  if (!logo) return;
+  saveState();
+  const ar = logo.img.naturalWidth / logo.img.naturalHeight;
+  const lw = Math.min(canvasW * 0.25, 250);
+  const lh = lw / ar;
+  const imgEl = makeImage(logo.img, logo.url, { x: canvasW * 0.04, y: canvasH * 0.04, w: lw, h: lh });
+  elements.push(imgEl);
+  selectedId = imgEl.id;
+  renderAll();
+}
+function removeLogo(logoId) {
+  savedLogos = savedLogos.filter(l => l.id !== logoId);
+  renderDrawer('logo');
 }
 
 // ═══════════════════════════════════════════════════
